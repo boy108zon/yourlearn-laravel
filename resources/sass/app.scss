@@ -1,0 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+
+// Variables
+@import 'variables';
+
+// Bootstrap
+@import 'bootstrap/scss/bootstrap';
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+
+
+@import '../css/app.css';
+
+.btn-bd-primary {
+    font-weight: 600;
+    color: $bs-white;
+    background-color: $bd-violet;
+    border-color: $bd-violet;
+  
+    &:hover {
+      background-color: lighten($bd-violet, 10%); // 10% lighter for hover
+      border-color: lighten($bd-violet, 10%);
+      color: $bs-white;
+    }
+  
+    &:focus {
+      box-shadow: 0 0 0 0.25rem rgba($bd-violet-rgb, 0.5);
+    }
+  
+    &:active {
+      background-color: darken($bd-violet, 20%); // 20% darker for active
+      border-color: darken($bd-violet, 20%);
+      color: $bs-white;
+    }
+  }

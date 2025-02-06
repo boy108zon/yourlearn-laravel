@@ -1,0 +1,36 @@
+import './bootstrap';
+import $ from 'jquery';
+import swal from 'sweetalert';  // Import SweetAlert
+import { Filters } from './modules/filters'; 
+import './modules/checkboxHandler';
+
+window.swal=swal;
+
+$(document).ready(function() {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+});
+
+document.querySelector("#sidebar-toggle")?.addEventListener("click", () => {
+    document.querySelector("#sidebar")?.classList.toggle("collapsed");
+});
+
+document.querySelector(".theme-toggle")?.addEventListener("click", () => {
+    const isLight = localStorage.getItem("light");
+    if (isLight) localStorage.removeItem("light");
+    else localStorage.setItem("light", "set");
+
+    document.documentElement.setAttribute('data-bs-theme', isLight ? 'light' : 'dark');
+});
+
+if (localStorage.getItem("light")) {
+    document.documentElement.setAttribute('data-bs-theme', 'dark');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    Filters.applyFilter('users');
+    Filters.applyFilter('roles');
+});
