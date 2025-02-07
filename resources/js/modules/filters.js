@@ -1,4 +1,18 @@
-import swal from 'sweetalert';
+import toastr from 'toastr';
+import 'toastr/build/toastr.min.css';
+
+window.toastr = toastr;
+
+toastr.options = {
+    closeButton: true,       
+    progressBar: true,       
+    positionClass: 'toast-top-right', 
+    timeOut: 3000,          
+    showMethod: 'fadeIn',   
+    hideMethod: 'fadeOut',  
+    extendedTimeOut: 1000,  
+    preventDuplicates: true,
+};
 
 const Filters = {
     applyFilter: function(module) {
@@ -12,6 +26,7 @@ const Filters = {
         
             let filters = {};
 
+            // Collecting all the filter inputs
             document.querySelectorAll('#filter-form [data-filter]').forEach(function(filterElement) {
                 const filterType = filterElement.getAttribute('data-filter');
                 const filterId = filterElement.querySelector('input, select').id; 
@@ -28,18 +43,13 @@ const Filters = {
                 }
             });
 
+            // Show a toast if no filters were applied
             if (Object.keys(filters).length === 0) {
-                // Use SweetAlert to show a message instead of Toastify
-                swal({
-                    title: "No Filters Applied",
-                    text: "Please apply at least one filter.",
-                    icon: "warning",  // Optional: You can use "info", "error", "success"
-                    buttons: "OK",  // Button to close the alert
-                    dangerMode: true,  // Optional: Red for a warning style
-                });
+                showToast("Please apply at least one filter.", 'error');
                 return; 
             }
 
+            // Build the new URL with applied filters
             let newUrl = `/${module}?`;
             Object.keys(filters).forEach((key, index) => {
                 newUrl += `${key}=${encodeURIComponent(filters[key])}`;
@@ -48,6 +58,7 @@ const Filters = {
                 }
             });
 
+            // Update the DataTable with the new URL
             const table = document.getElementById(`${module}-table`);
             if (!table) {
                 console.error(`Table for ${module} not found.`);
@@ -59,5 +70,18 @@ const Filters = {
         });
     }
 };
+
+function showToast(message, type = 'success') {
+    // Display a toastr notification based on the type
+    if (type === 'success') {
+        toastr.success(message);
+    } else if (type === 'error') {
+        toastr.error(message);
+    } else if (type === 'info') {
+        toastr.info(message);
+    } else if (type === 'warning') {
+        toastr.warning(message);
+    }
+}
 
 export { Filters };

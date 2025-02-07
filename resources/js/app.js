@@ -1,10 +1,7 @@
 import './bootstrap';
 import $ from 'jquery';
-import swal from 'sweetalert';  // Import SweetAlert
 import { Filters } from './modules/filters'; 
 import './modules/checkboxHandler';
-
-window.swal=swal;
 
 $(document).ready(function() {
     $.ajaxSetup({

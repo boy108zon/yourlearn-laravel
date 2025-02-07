@@ -1,34 +1,53 @@
-@if(session('swal'))
+
+@if(session('swal')) 
     @php
         $swalMessage = session('swal.message');
         $swalType = session('swal.type', 'success'); 
     @endphp
     <script>
         window.addEventListener('load', () => {
-            swal({
-                title: '',
-                text: '{{ $swalMessage }}',
-                icon: '{{ $swalType }}',
-                buttons: false,  // Hide the confirm button
-                timer: 3000,  // Duration in milliseconds
-                position: 'top-right',  // Positioning in the top-right corner
-                customClass: {
-                    popup: 'swal-sm p-3 bg-light border border-primary rounded-3 shadow-lg',  // Small popup with light background, border, and shadow
-                    title: 'h4 text-center text-primary',  // Centered title with primary color
-                    content: 'text-muted',  // Muted content text
-                    container: 'w-auto'  // Automatic width based on content
-                }
-            });
+            // Toastr.js notification
+            toastr.options = {
+                closeButton: true,  // Show close button
+                progressBar: true,  // Show progress bar
+                positionClass: 'toast-top-right', // Position of the toast
+                timeOut: 3000,  // Time before toast hides
+                showMethod: 'fadeIn', // Toast fade-in effect
+                hideMethod: 'fadeOut', // Toast fade-out effect
+                extendedTimeOut: 1000, // Additional time after user hovers over the toast
+                preventDuplicates: true,  // Prevent duplicate toasts
+            };
+
+            // Show the Toastr notification based on the session data
+            if ('{{ $swalType }}' === 'success') {
+                toastr.success('{{ $swalMessage }}');
+            } else if ('{{ $swalType }}' === 'error') {
+                toastr.error('{{ $swalMessage }}');
+            } else if ('{{ $swalType }}' === 'info') {
+                toastr.info('{{ $swalMessage }}');
+            } else if ('{{ $swalType }}' === 'warning') {
+                toastr.warning('{{ $swalMessage }}');
+            }
         });
     </script>
 @endif
 
-
 @if(session('alert_message'))
-    <div class="container-fluid">
-        <div class="alert alert-{{ session('alert_type') }} alert-dismissible fade show" role="alert">
-            {{ session('alert_message') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    </div>
+    <script>
+        window.addEventListener('load', () => {
+            toastr.options = {
+                closeButton: true,
+                progressBar: true,
+                positionClass: 'toast-top-right',
+                timeOut: 3000,
+                showMethod: 'fadeIn',
+                hideMethod: 'fadeOut',
+                extendedTimeOut: 1000,
+                preventDuplicates: true,
+            };
+
+            // Display the alert message using Toastr.js
+            toastr['{{ session('alert_type') }}']('{{ session('alert_message') }}');
+        });
+    </script>
 @endif

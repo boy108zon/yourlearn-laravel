@@ -18,6 +18,6 @@
     "dependencies": {
         "datatables.net": "^2.2.1",
         "datatables.net-dt": "^2.2.1",
-        "sweetalert": "^2.1.2"
+        "toastr": "^2.1.4"
     }
 }
