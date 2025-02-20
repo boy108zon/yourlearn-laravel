@@ -28,6 +28,26 @@ if (localStorage.getItem("light")) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    Filters.applyFilter('users');
-    Filters.applyFilter('roles');
+
+    const filterForm = document.getElementById('filter-form');
+    const currentModule = filterForm ? filterForm.dataset.module : null;
+    if (currentModule) {
+        switch (currentModule) {
+            case 'users.index':
+                console.log('ff');
+                Filters.applyFilter('users');
+                break;
+            case 'roles.index':
+                Filters.applyFilter('roles');
+                break;
+            case 'log-activity.index':
+                Filters.applyFilter('log-activity');
+                break;
+            default:
+                console.log("No matching module found for filter application");
+                break;
+        }
+    }
+
 });
+

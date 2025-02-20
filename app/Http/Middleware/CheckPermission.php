@@ -26,7 +26,7 @@ class CheckPermission
     public function handle($request, Closure $next, $permissionSlug)
     {
         if (!Auth::user()->availablePermissions()->pluck('slug')->contains($permissionSlug)) {
-            return redirect()->route('home')->with('alert_type', 'danger')->with('alert_message', 'You do not have the required permission.');
+            return redirect()->route('home')->with('custom_alert_type', 'info')->with('custom_alert_message', 'You do not have the required permission.');
         }
 
         return $next($request);

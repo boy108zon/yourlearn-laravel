@@ -2,68 +2,51 @@
 
 namespace App\DataTables;
 
-use App\Models\User;
+use App\Models\LogActivity; 
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
 use Illuminate\Support\Facades\Auth;
-use Yajra\DataTables\Html\Editor\Editor;
-use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 use Carbon\Carbon;
 
-
-class UsersDataTable extends DataTable
+class LogActivityDataTable extends DataTable
 {
-    public $start_date;
-    public $end_date;
-
     protected $userPermissions;
 
     public function __construct()
     {
         $this->userPermissions = Auth::user()->availablePermissions()->pluck('slug');
     }
+
     /**
      * Build the DataTable class.
      *
-     * @param QueryBuilder $query Results from query() method.
+     * @param \Illuminate\Database\Eloquent\Builder $query Results from query() method.
+     * @return EloquentDataTable
      */
-    public function dataTable(QueryBuilder $query): EloquentDataTable
+    public function dataTable($query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->addColumn('action', function ($user) {
-                $userPermissions = $this->userPermissions;
-                return view('users.action', compact('user','userPermissions'));
+            ->addColumn('action', function ($logActivity) {
+              //  return view('log_activity.action', compact('logActivity'));
             })
             ->setRowId('id')
-            ->editColumn('created_at', function ($user) {
-                return $user->created_at->format('d-m-Y H:i:s');
+            ->editColumn('created_at', function ($logActivity) {
+                return $logActivity->created_at->format('d-m-Y H:i:s'); // Format the date
             })
-            ->editColumn('name', function ($user) {
-                $roles = $user->roles;
-                $roleBadges = '';
-                foreach ($roles as $role) {
-                    $badgeClass = $role->badge_color ?: 'bg-secondary';
-                    $roleBadges .= '<span class="badge ' . $badgeClass . '">' . ucfirst($role->name) . '</span> ';
-                }
-
-                return $user->name . ' ' . $roleBadges;
+            ->editColumn('event', function ($logActivity) {
+                return ucfirst($logActivity->event); 
             })
-            ->rawColumns(['action', 'name']);
-    }
-     
-   
-    public function querySimple(User $model): QueryBuilder
-    {
-        return $model->newQuery();
+            ->rawColumns(['action']);
     }
 
-    public function query(User $model): QueryBuilder
+    public function query(LogActivity $model): QueryBuilder
     {
         $query = $model->newQuery();
+
         if (request()->filled('start_date') && request()->filled('end_date')) {
             $startDate = request()->input('start_date');
             $endDate = request()->input('end_date');
@@ -73,14 +56,17 @@ class UsersDataTable extends DataTable
                 Carbon::parse($endDate)->endOfDay()
             ]);
         }
-
+        if (request()->filled('user_id')) {
+            $userId = request()->input('user_id');
+            $query->where('user_id', $userId);
+        }
         return $query;
     }
 
     public function html(): HtmlBuilder{
 
         return $this->builder()
-            ->setTableId('users-table')
+            ->setTableId('log-activity-table')
             ->columns($this->getColumns())
             ->minifiedAjax()
             ->orderBy(1)
@@ -112,46 +98,34 @@ class UsersDataTable extends DataTable
                         'visible' => false,
                     ],
                 ],
-            ])->postAjax(route('users.index'));;
+            ])->postAjax(route('log-activity.index'));
     }
+
    
-   
+    /**
+     * Get the DataTable columns definition.
+     *
+     * @return array
+     */
     public function getColumns(): array
     {
-        
-        $canEdit = $this->userPermissions->contains('edit-user');
-        $canDelete = $this->userPermissions->contains('remove-user');
-        $canRsetPassword = $this->userPermissions->contains('reset-password-for-users');
-
         $columns = [
             Column::make('id')->width('10%'),
-            Column::make('name')->width('25%'),
-            Column::make('email')->width('30%'),
-            Column::make('created_at')->title('Date Created')->width('15%'),
+            Column::make('event')->title('Event')->width('40%'),
+            Column::make('description')->title('History')->width('40%'),
+            Column::make('created_at')->title('Date Changed')->width('20%'),
         ];
-    
-        if ($canEdit || $canDelete || $canRsetPassword) {
-            $columns[] = Column::computed('action')
-                ->exportable(true)
-                ->printable(true)
-                ->width('20%')
-                ->addClass('text-center');
-        }
-    
-        return $columns;
-    }
-    
 
-    public function show(User $user)
-    {
-        return view('users.show', compact('user'));
+        return $columns;
     }
 
     /**
      * Get the filename for export.
+     *
+     * @return string
      */
     protected function filename(): string
     {
-        return 'Users_' . date('YmdHis');
+        return 'LogActivity_' . date('YmdHis');
     }
 }

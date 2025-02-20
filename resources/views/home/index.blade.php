@@ -1,7 +1,6 @@
 @extends('layouts.master')
 
 @section('content')
-<main class="content px-3 py-2">
     <div class="container-fluid">
         <h4>Admin Dashboard</h4>
         <div class="row">
@@ -78,5 +77,4 @@
             </div>
         </div>
     </div>
-</main>
 @endsection

@@ -3,6 +3,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\RolesController;
 use App\Http\Controllers\RolePermissionController;
+use App\Http\Controllers\MenusController;
+use App\Http\Controllers\LogActivityController;
 use Illuminate\Support\Facades\Route;
 
 // Auth Routes
@@ -50,4 +52,18 @@ Route::prefix('roles/permissions')->name('permissions.')->middleware('permission
     Route::put('{permissionId}/changename', [RolePermissionController::class, 'changeName'])->name('changename')->middleware('permission:edit-permission');
     Route::delete('{permission}', [RolePermissionController::class, 'destroy'])->name('destroy')->middleware('permission:remove-permission');
     
+});
+
+Route::prefix('menus')->name('menus.')->middleware('permission:list-menu')->group(function () {
+    Route::get('/', [MenusController::class, 'index'])->name('index');
+    Route::get('create', [MenusController::class, 'create'])->name('create')->middleware('permission:create-menu');
+    Route::post('store', [MenusController::class, 'store'])->name('store')->middleware('permission:create-menu');
+    Route::get('{menu}/edit', [MenusController::class, 'edit'])->name('edit')->middleware('permission:edit-menu');
+    Route::put('{menu}', [MenusController::class, 'update'])->name('update')->middleware('permission:edit-menu');
+    Route::delete('{menu}', [MenusController::class, 'destroy'])->name('destroy')->middleware('permission:remove-menu');
+});
+
+
+Route::prefix('log-activity')->name('log-activity.')->middleware('permission:log-activity')->group(function () {
+    Route::get('/', [LogActivityController::class, 'index'])->name('index');
 });

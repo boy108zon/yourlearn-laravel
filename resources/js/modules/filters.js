@@ -57,8 +57,8 @@ const Filters = {
                     newUrl += '&';
                 }
             });
-
-            // Update the DataTable with the new URL
+           
+           
             const table = document.getElementById(`${module}-table`);
             if (!table) {
                 console.error(`Table for ${module} not found.`);

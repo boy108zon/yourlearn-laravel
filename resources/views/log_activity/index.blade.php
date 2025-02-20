@@ -1,9 +1,10 @@
+
 @extends('layouts.master')
  
 @section('content')
     <div class="container-fluid">
         <div class="card bg-white">
-          <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="card-title mb-0"></h5>
                 <div class="row g-3 w-100" id="filter-form" data-module="{{ request()->route()->getName() }}">
                     <div class="col-md-2" data-filter="date">
@@ -12,15 +13,19 @@
                     <div class="col-md-2" data-filter="date">
                         <input type="date" id="end_date" class="form-control" placeholder="End Date" />
                     </div>
-
-                <div class="col-md-2 d-flex align-items-center">
-                        <i class="bi bi-funnel fs-3 text-primary" id="applyFilter" style="cursor: pointer;"></i>
+                    <div class="col-md-2" data-filter="select">
+                        <select id="user_id" class="form-select">
+                            <option value="">Select User</option>
+                            @foreach($users as $user)
+                                <option value="{{ $user->id }}">{{ $user->name }}</option>
+                            @endforeach
+                        </select>
                     </div>
-                </div>
 
-                
-                @include('users.manage-action')
-                
+                    <div class="col-md-2 d-flex align-items-center">
+                            <i class="bi bi-funnel fs-3 text-primary" id="applyFilter" style="cursor: pointer;"></i>
+                        </div>
+                 </div>
             </div>
 
             <div class="card-body">
@@ -43,13 +48,5 @@
             Filters.applyFilter('filters');
         }
     </script>
-    <script>
-        function confirmDelete(userId) {
-            if (confirm('Are you sure you want to delete  ?')) {
-                document.getElementById('delete-form-' + userId).submit();
-            }
-        }
-    </script>
-    
     {{ $dataTable->scripts(attributes: ['type' => 'module']) }}
 @endpush

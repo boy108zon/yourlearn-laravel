@@ -3,15 +3,27 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Menu extends Model
 {
-    use HasFactory;
-
+    use HasFactory,SoftDeletes;
+    
     protected $table = 'menus';
+    protected $dates = ['deleted_at'];
+    
+    protected $fillable = [
+        'name',
+        'title',
+        'url',
+        'slug',
+        'sequence',
+        'status',
+        'parent_id',
+        'icon'
+    ];
 
-    protected $fillable = ['title', 'url', 'slug','sequence','status','parent_id','icon']; // Example fillable fields
-
+   
 
     public function roles()
     {

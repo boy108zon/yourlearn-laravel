@@ -5,18 +5,15 @@
     </button>
     @endif
 
-    <!-- Navbar Toggler (Hamburger) -->
+    
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
 
-    <!-- Navbar Links -->
     <div class="navbar-collapse collapse w-100" id="navbarNav">
         <ul class="navbar-nav me-auto">
-            <!-- Add your left-side links here -->
         </ul>
 
-        <!-- Right Side Of Navbar (Authentication Links) -->
         <ul class="navbar-nav ms-auto">
             @guest
                 @if (Route::has('login'))

@@ -1,3 +1,20 @@
+@if (session('custom_alert_type') && session('custom_alert_message'))
+    <div class="container-fluid">
+        <div class="alert alert-{{ session('custom_alert_type') }} alert-dismissible fade show" role="alert">
+            <div class="container-fluid">
+                <div class="row justify-content-center">
+                    <div class="col-12 col-md-8 col-lg-6">
+                        <div class="alert-content">
+                            {{ session('custom_alert_message') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endif
+
 
 @if(session('swal')) 
     @php

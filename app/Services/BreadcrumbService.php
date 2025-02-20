@@ -5,8 +5,8 @@ use App\Models\Menu;
 
 class BreadcrumbService
 {
-    public function generateBreadcrumbs()
-    {
+    public function generateBreadcrumbs(){
+
         $breadcrumbs = [];
         $currentUrl = url()->current();
         $parsedUrl = parse_url($currentUrl, PHP_URL_PATH);  
@@ -18,7 +18,6 @@ class BreadcrumbService
         if ($menu) {
             $staticBreadcrumbs = [];
             while ($menu) {
-                
                 $staticBreadcrumbs[] = (object) [
                     'title' => $menu->title,
                     'url' => $menu->url,
@@ -35,6 +34,10 @@ class BreadcrumbService
         if (count($urlSegments) > 1) {
             foreach (array_slice($urlSegments, 1) as $segment) {
                 
+                if (is_numeric($segment)) {
+                    continue; 
+                }
+
                 $menu = Menu::where('url', '/' . $segment)->first();
 
                 if ($menu) {
@@ -48,16 +51,16 @@ class BreadcrumbService
                         'title' => ucfirst($segment),
                         'name' => ucfirst($segment),
                         'url' => '/' . implode('/', array_slice($urlSegments, 0, array_search($segment, $urlSegments) + 1)),
-                        'icon' => $this->getDynamicIcon($segment) 
+                        'icon' => $this->getDynamicIcon($segment)
                     ];
                 }
             }
         }
 
         $breadcrumbs = array_merge($breadcrumbs, $dynamicBreadcrumbs);
-
         return $breadcrumbs;
     }
+
 
 
     private function getDynamicIcon($segment)
