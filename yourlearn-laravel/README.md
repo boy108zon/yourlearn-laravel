@@ -6,32 +6,18 @@
 4. php artisan db:seed
 5. npm run dev
 
-<<<<<<< HEAD
 ## Read In Article
 
  https://yourlearn.in/posts/example-of-dynamic-menu-on-user-roles-permissions-laravel-bootstrap
  
-=======
-## Little Preview
-
-https://yourlearn.in/posts/example-of-dynamic-menu-on-user-roles-permissions-laravel-bootstrap
-
-## Little Post
-
-<p><img src="https://yourlearn.in/dist/img/dynamic-menu-on-user-roles-permissions-laravel-bootstrap.png" /></p>
-
->>>>>>> master
 ## About this project
 
 This application is built using :
 
-<<<<<<< HEAD
 <p>
       <img src="https://yourlearn.in/dist/img/dynamic-menu-on-user-roles-permissions-laravel-bootstrap.png">
 </p>
 
-=======
->>>>>>> master
 <ul>
     <li><a href="https://laravel.com/docs/11.x/releases" target="_blank">Laravel 11</a> (featuring <a href="https://vitejs.dev/" target="_blank">Vite</a>)</li>
     <li><a href="https://blog.getbootstrap.com/2024/02/20/bootstrap-5-3-3/" target="_blank">Bootstrap 5.3</a></li>

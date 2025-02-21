@@ -1,0 +1,57 @@
+Arguments: 
+  C:\Program Files\nodejs\node.exe C:\Users\Dell\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js add @sonner/react
+
+PATH: 
+  C:\Python312\Scripts\;C:\Python312\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\PuTTY\;C:\Program Files\Git\cmd;C:\ProgramData\ComposerSetup\bin;D:\wamp64\bin\php\php8.2.27;C:\ProgramData\chocolatey\bin;C:\Program Files\nodejs;C:\Program Files\nodejs\node_modules\npm\bin;C:\Program Files\PowerShell\7\;C:\Program Files\nodejs\;C:\Users\Dell\AppData\Local\Microsoft\WindowsApps;;C:\Microsoft VS Code\bin;C:\Users\Dell\AppData\Roaming\Composer\vendor\bin;C:\Users\Dell\AppData\Roaming\npm
+
+Yarn version: 
+  1.22.19
+
+Node version: 
+  22.13.0
+
+Platform: 
+  win32 x64
+
+Trace: 
+  Error: https://registry.yarnpkg.com/@sonner%2freact: Not found
+      at params.callback [as _callback] (C:\Users\Dell\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:66145:18)
+      at self.callback (C:\Users\Dell\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:140890:22)
+      at Request.emit (node:events:524:28)
+      at Request.<anonymous> (C:\Users\Dell\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:141862:10)
+      at Request.emit (node:events:524:28)
+      at IncomingMessage.<anonymous> (C:\Users\Dell\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:141784:12)
+      at Object.onceWrapper (node:events:638:28)
+      at IncomingMessage.emit (node:events:536:35)
+      at endReadableNT (node:internal/streams/readable:1698:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:90:21)
+
+npm manifest: 
+  {
+      "private": true,
+      "type": "module",
+      "scripts": {
+          "dev": "concurrently \"php artisan serve\" \"vite\"",
+          "build": "vite build"
+      },
+      "devDependencies": {
+          "@popperjs/core": "^2.11.6",
+          "axios": "^1.6.4",
+          "bootstrap": "^5.3.3",
+          "bootstrap-icons": "^1.11.3",
+          "concurrently": "^9.1.2",
+          "laravel-vite-plugin": "^1.0",
+          "sass": "1.77.6",
+          "vite": "^6.0"
+      },
+      "dependencies": {
+          "datatables.net": "^2.2.1",
+          "datatables.net-dt": "^2.2.1"
+      }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
