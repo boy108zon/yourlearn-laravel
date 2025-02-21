@@ -34,7 +34,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (currentModule) {
         switch (currentModule) {
             case 'users.index':
-                console.log('ff');
                 Filters.applyFilter('users');
                 break;
             case 'roles.index':
