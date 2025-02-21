@@ -8,7 +8,11 @@
 
 ## Little Preview
 
-<p><img src="https://yourlearn.in/posts/example-of-dynamic-menu-on-user-roles-permissions-laravel-bootstrap" /></p>
+https://yourlearn.in/posts/example-of-dynamic-menu-on-user-roles-permissions-laravel-bootstrap
+
+## Little Post
+
+<p><img src="https://yourlearn.in/dist/img/dynamic-menu-on-user-roles-permissions-laravel-bootstrap.png" /></p>
 
 ## About this project
 
