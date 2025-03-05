@@ -6,10 +6,12 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "intervention/image": "^3.11",
         "laravel/framework": "^11.0",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.5",
+        "owen-it/laravel-auditing": "^14.0",
         "spatie/laravel-permission": "^6.10",
         "yajra/laravel-datatables-buttons": "^11.2",
         "yajra/laravel-datatables-oracle": "^11.1"

@@ -43,7 +43,7 @@ return [
             'visibility' => 'public',
             'throw' => false,
         ],
-
+        
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),
@@ -55,7 +55,26 @@ return [
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
             'throw' => false,
         ],
-
+        'bitbucket' => [
+                'driver' => 'ftp', 
+                'host' => env('BITBUCKET_HOST'),
+                'username' => env('BITBUCKET_USERNAME'),
+                'password' => env('BITBUCKET_PASSWORD'),
+                'root' => env('BITBUCKET_ROOT'), 
+                'passive' => true,
+                'ssl' => true,
+                'throw' => false, 
+        ],
+        'ftp' => [
+            'driver' => 'ftp',
+            'host' => env('FTP_HOST'),
+            'username' => env('FTP_USERNAME'),
+            'password' => env('FTP_PASSWORD'),
+            'root' => env('FTP_ROOT', '/'),
+            'passive' => env('FTP_PASSIVE', true),
+            'ssl' => env('FTP_SSL', false),
+            'timeout' => 30,
+        ],
     ],
 
     /*

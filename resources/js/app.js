@@ -1,7 +1,10 @@
-import './bootstrap';
+
+//import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import $ from 'jquery';
 import { Filters } from './modules/filters'; 
 import './modules/checkboxHandler';
+import loadProductsWithFilters from './modules/loadProductsWithFilters';
 
 $(document).ready(function() {
     $.ajaxSetup({
@@ -9,6 +12,8 @@ $(document).ready(function() {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
+
+    
 });
 
 document.querySelector("#sidebar-toggle")?.addEventListener("click", () => {
@@ -34,6 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (currentModule) {
         switch (currentModule) {
             case 'users.index':
+                console.log('ff');
                 Filters.applyFilter('users');
                 break;
             case 'roles.index':
@@ -42,11 +48,17 @@ document.addEventListener('DOMContentLoaded', () => {
             case 'log-activity.index':
                 Filters.applyFilter('log-activity');
                 break;
+            case 'products.index':
+                Filters.applyFilter('products');
+                break;
             default:
                 console.log("No matching module found for filter application");
                 break;
         }
-    }
+    }  
 
+
+    
+
+    
 });
-

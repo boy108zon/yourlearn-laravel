@@ -5,14 +5,32 @@ use App\Http\Controllers\RolesController;
 use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\MenusController;
 use App\Http\Controllers\LogActivityController;
+use App\Http\Controllers\SiteController;
+use App\Http\Controllers\ProductsController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\CategoriesController;
 use Illuminate\Support\Facades\Route;
 
 // Auth Routes
 Auth::routes();
 
 // Home Route
-Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/', [SiteController::class, 'index'])->name('site');
+Route::post('/get-products', [SiteController::class, 'getProducts']);
 Route::get('/home', [HomeController::class, 'index'])->name('home');
+
+Route::get('/cart', [CartController::class, 'getCart'])->name('cart.index');
+Route::get('/cart/add/{productId}', [CartController::class, 'addProductToCart'])->name('cart.add');
+Route::delete('/cart/remove/{productId}', [CartController::class, 'removeProductFromCart'])->name('cart.remove');
+Route::post('/cart/clear', [CartController::class, 'clearCart'])->name('cart.clear');
+Route::put('/cart/update/{productId}', [CartController::class, 'updateCart'])->name('cart.update');
+Route::get('/checkout/index', [CartController::class, 'clearCart'])->name('checkout.index');
+Route::delete('/cart/remove/{productId}', [CartController::class, 'removeProductFromCart'])->name('cart.remove');
+Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+Route::post('/checkout/process', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
+Route::get('/checkout/success', [CheckoutController::class, 'success'])->name('checkout.success');
+
 
 // User Routes with Permissions
 Route::prefix('users')->name('users.')->middleware('permission:list-users')->group(function() {
@@ -64,6 +82,37 @@ Route::prefix('menus')->name('menus.')->middleware('permission:list-menu')->grou
 });
 
 
+Route::prefix('categories')->name('categories.')->middleware('permission:categories')->group(function () {
+    Route::get('/', [CategoriesController::class, 'index'])->name('index');
+    Route::get('create', [CategoriesController::class, 'create'])->name('create')->middleware('permission:create-category');
+    Route::post('store', [CategoriesController::class, 'store'])->name('store')->middleware('permission:create-category');
+    Route::get('{category}/edit', [CategoriesController::class, 'edit'])->name('edit')->middleware('permission:edit-category');
+    Route::post('{category}', [CategoriesController::class, 'update'])->name('update')->middleware('permission:edit-category');
+    Route::put('{category}', [CategoriesController::class, 'update'])->name('update')->middleware('permission:edit-category');
+    Route::delete('{category}', [CategoriesController::class, 'destroy'])->name('destroy')->middleware('permission:remove-category');
+    
+    Route::get('productsIndex', [CategoriesController::class, 'productsIndex'])->name('productsIndex');
+    Route::prefix('{category}/products')->name('products.')->group(function () {
+            
+            Route::get('/', [CategoriesController::class, 'productsIndex'])->name('productsIndex'); 
+            Route::get('create', [ProductsController::class, 'create'])->name('create'); 
+            Route::post('store', [ProductsController::class, 'store'])->name('store'); 
+    });
+});
+
+Route::prefix('products')->name('products.')->middleware('permission:list-products')->group(function () {
+    Route::get('/', [ProductsController::class, 'index'])->name('index');
+    Route::get('create', [ProductsController::class, 'create'])->name('create')->middleware('permission:create-product');
+    Route::post('store', [ProductsController::class, 'store'])->name('store')->middleware('permission:create-product');
+    Route::get('{product}/edit', [ProductsController::class, 'edit'])->name('edit')->middleware('permission:edit-product');
+    Route::post('{product}', [ProductsController::class, 'update'])->name('update')->middleware('permission:edit-product');
+    Route::put('{product}', [ProductsController::class, 'update'])->name('update')->middleware('permission:edit-product');
+    Route::delete('{product}', [ProductsController::class, 'destroy'])->name('destroy')->middleware('permission:remove-product');
+
+});
+
 Route::prefix('log-activity')->name('log-activity.')->middleware('permission:log-activity')->group(function () {
     Route::get('/', [LogActivityController::class, 'index'])->name('index');
 });
+
+

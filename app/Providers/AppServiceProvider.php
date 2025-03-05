@@ -21,39 +21,50 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
+    public function boot(): void 
     {
         View::composer('partials.sidebar', function ($view) {
             $user = auth()->user();
-            $roles = $user->roles;
-            $assignedMenuIds = $roles->flatMap(function ($role) {
-                return $role->menus->pluck('id'); 
-            })->unique(); 
+            if ($user) {
+                $roles = $user->roles;
 
-            $menus = Menu::with(['children' => function ($query) {
-                $query->where('status', 'active');
-            }])
-            ->whereIn('id', $assignedMenuIds) 
-            ->where('parent_id', 0) 
-            ->where('status', 'active') 
-            ->orderBy('sequence')
-            ->get();
+                $assignedMenuIds = $roles->flatMap(function ($role) {
+                    return $role->menus->pluck('id'); 
+                })->unique();
 
-            $currentPath = request()->path();
+                
+                $menus = Menu::with(['children' => function ($query) {
+                    $query->where('status', 'active');
+                }])
+                ->whereIn('id', $assignedMenuIds)
+                ->where('parent_id', 0)
+                ->where('status', 'active')
+                ->get();
 
-            $menus->each(function ($menu) use ($currentPath) {
-                if ($this->isMenuActive($menu->url, $currentPath)) {
-                    $menu->is_active = true;
-                }
+                $menus = $menus->sortBy('sequence');
 
-                foreach ($menu->children as $child) {
-                    if ($this->isMenuActive($child->url, $currentPath)) {
-                        $child->is_active = true;
+                $menus->each(function ($menu) {
+                    $menu->children = $menu->children->sortBy('sequence'); 
+                });
+
+                $currentPath = request()->path();
+                $menus->each(function ($menu) use ($currentPath) {
+                    if ($this->isMenuActive($menu->url, $currentPath)) {
                         $menu->is_active = true;
                     }
-                }
-            });
-           $view->with('menus', $menus);
+
+                    foreach ($menu->children as $child) {
+                        if ($this->isMenuActive($child->url, $currentPath)) {
+                            $child->is_active = true;
+                            $menu->is_active = true;
+                        }
+                    }
+                });
+
+                $view->with('menus', $menus);
+            } else {
+                $view->with('menus', collect());
+            }
         });
     }
 

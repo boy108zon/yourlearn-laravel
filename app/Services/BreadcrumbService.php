@@ -14,8 +14,8 @@ class BreadcrumbService
         $urlSegments = explode('/', $currentUrlPath);
 
         $menu = Menu::where('url', '/' . $urlSegments[0])->first();
-
-        if ($menu) {
+        
+        if (!empty($menu)) {
             $staticBreadcrumbs = [];
             while ($menu) {
                 $staticBreadcrumbs[] = (object) [

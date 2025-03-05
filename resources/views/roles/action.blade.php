@@ -15,7 +15,7 @@
             <li><a href="{{ route('roles.permissions', $role->id) }}" class="dropdown-item">Assign Permissions</a></li>
             @endif
 
-            @if($userPermissions->contains('remove-role'))
+            @if($userPermissions->contains('remove-role') && $role->id !== 1)
                 <li>
                     <form id="delete-form-{{ $role->id }}" action="{{ route('roles.destroy', $role->id) }}" method="POST" style="display:inline;">
                         @csrf

@@ -47,7 +47,7 @@ class MenusDataTable extends DataTable
             ]);
         }
 
-        $query->with('children')->withTrashed()->where('parent_id', 0);
+        $query->with('children')->withTrashed()->where('parent_id', 0)->orderBy('sequence');
         return $query->orderBy('name');
     }
 

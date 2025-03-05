@@ -1,3 +1,4 @@
+@if(!empty($breadcrumbs))
 <div class="container-fluid">
     <div aria-label="breadcrumb">
         <ol class="breadcrumb bg-light p-3 rounded shadow-sm">
@@ -19,4 +20,5 @@
         </ol>
     </div>
 </div>
+@endif
 
