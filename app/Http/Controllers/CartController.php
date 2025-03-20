@@ -19,7 +19,10 @@ class CartController extends Controller
     {
         $showSidebar = false;
         $cartItems = $this->cartService->getCartContents();
-        $cartTotal = $this->cartService->getTotalPrice();
+        $cartTotal = $cartItems->sum(function ($cartItem) {
+            return $cartItem->quantity * $cartItem->product->price;
+        });
+    
         return view('cart.index', compact('cartItems', 'cartTotal', 'showSidebar'));
     }
     
@@ -27,15 +30,27 @@ class CartController extends Controller
     {
         
         $quantity = $request->input('quantity', 1);
-        $this->cartService->addProductToCart($productId, $quantity);
+        $result=$this->cartService->addProductToCart($productId, $quantity);
+        
+        if(!$result){
+            return redirect()->route('cart.index')->with('swal', [
+                'message' => 'Product could not be added to the cart (out of stock or invalid quantity).',
+                'type' => 'error',
+            ]);
+        }
         return redirect()->route('cart.index')->with('success', 'Product added to cart!');
     }
 
-    public function removeProductFromCart($productId)
+    public function removeProductFromCart($cartId, $productId)
     {
-       $removed = $this->cartService->removeCartItem($productId);
+       $removed = $this->cartService->removeCartItem($cartId,$productId);
        if ($removed) {
-           return redirect()->route('cart.index')->with('success', 'Product removed from cart.');
+
+        return redirect()->route('cart.index')->with('swal', [
+            'message' => 'Product removed from cart.',
+            'type' => 'success',
+        ]);
+        
        }
 
        return redirect()->route('cart.index')->with('error', 'Product not found in the cart.');
@@ -43,6 +58,7 @@ class CartController extends Controller
 
     public function clearCart()
     {
+      
         $this->cartService->clearCart();
         return redirect()->route('cart.index')->with('success', 'Cart has been cleared!');
     }

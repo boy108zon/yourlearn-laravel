@@ -23,9 +23,8 @@ const loadProductsWithFilters = (page = 1, categoryId = currentCategory, priceRa
     if (isLoading) return;
     isLoading = true;
 
-    const url = '/get-products';  // The URL remains the same
+    const url = '/get-products';
 
-    // Prepare the data to send in the POST body
     const data = {
         page,
         category_id: categoryId,
@@ -34,27 +33,28 @@ const loadProductsWithFilters = (page = 1, categoryId = currentCategory, priceRa
     };
 
     const loadMoreGif = document.getElementById('loader');
-    loadMoreGif.style.display = 'block'; // Show the loading spinner
 
-    // Get CSRF token from meta tag
+    if (loadMoreGif) {
+        loadMoreGif.style.display = 'block';
+    }
+
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
     fetch(url, {
-        method: 'POST',  // Use POST instead of GET
+        method: 'POST', 
         headers: {
-            'Content-Type': 'application/json',  // Set the content type to JSON
-            'X-CSRF-TOKEN': csrfToken  // Add CSRF token to the request headers
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken
         },
-        body: JSON.stringify(data)  // Send the data as JSON in the body of the POST request
+        body: JSON.stringify(data)
     })
     .then(response => response.ok ? response.json() : Promise.reject('Failed to fetch products'))
     .then(data => {
         const productContainer = document.getElementById('product-list');
 
-        if (data && data.products && data.products.data.length) {
-            if (page === 1) productContainer.innerHTML = '';  // Clear previous products if it's the first page
+        if (data && data.products && data.products.data.length && productContainer) {
+            if (page === 1) productContainer.innerHTML = '';
 
-            // Loop through the products and append them to the product container
             data.products.data.forEach(product => {
                 const categoryList = product.categories.map(category => {
                     return `<span class="badge bg-primary">${category.name}</span>`;
@@ -68,6 +68,13 @@ const loadProductsWithFilters = (page = 1, categoryId = currentCategory, priceRa
                                     <img class="pic-1" src="/storage/${product.image_url}" alt="${product.name}" loading="lazy">
                                     <img class="pic-2" src="/storage/${product.image_url}" alt="${product.name}" loading="lazy">
                                 </a>
+                                ${
+                                  product.stock_quantity <= 0
+                                      ? `<div class="position-absolute top-50 start-50 translate-middle badge text-bg-danger text-wrap py-1 px-3 rounded">
+                                          <small><strong>Out of Stock</strong></small>
+                                      </div>`
+                                      : ''
+                                }
                                 <a href="#" class="product-like-icon" data-tip="Add to Wishlist">
                                     <i class="bi bi-heart"></i>
                                 </a>
@@ -98,7 +105,10 @@ const loadProductsWithFilters = (page = 1, categoryId = currentCategory, priceRa
             loadMoreButton.style.display = isLastPage ? 'none' : 'block';  
         } else {
             if (page === 1) {
-                productContainer.innerHTML = '<p>No products found.</p>';
+                if (productContainer) {
+                    productContainer.innerHTML = '<p>No products found.</p>';
+                }
+                
             }
         }
     })
@@ -108,7 +118,10 @@ const loadProductsWithFilters = (page = 1, categoryId = currentCategory, priceRa
     })
     .finally(() => {
         isLoading = false;
-        loadMoreGif.style.display = 'none'; 
+        if (loadMoreGif) {
+            loadMoreGif.style.display = 'none'; 
+        }
+        
     });
 };
 
@@ -126,46 +139,68 @@ const clearAllFilters = () => {
 };
 
 
-document.getElementById('clear-filters').addEventListener('click', clearAllFilters);
+const clearFiltersButton = document.getElementById('clear-filters');
+if (clearFiltersButton) {
+  clearFiltersButton.addEventListener('click', clearAllFilters);
+}
 
-document.getElementById('search-box').addEventListener('input', event => {
+const searchBox = document.getElementById('search-box');
+if (searchBox) {
+  searchBox.addEventListener('input', event => {
     currentSearchQuery = event.target.value;
     currentPage = 1;
     loadProductsWithFilters(currentPage, currentCategory, currentPriceRange, currentSearchQuery);
-});
+  });
+}
 
-document.getElementById('load-more').addEventListener('click', () => {
+const loadMoreButton = document.getElementById('load-more');
+if (loadMoreButton) {
+  loadMoreButton.addEventListener('click', () => {
     currentPage += 1;
     loadProductsWithFilters(currentPage, currentCategory, currentPriceRange, currentSearchQuery);
-});
+  });
+}
 
-document.getElementById('category-filter').addEventListener('change', event => {
+const categoryFilter = document.getElementById('category-filter');
+if (categoryFilter) {
+  categoryFilter.addEventListener('change', event => {
     currentCategory = event.target.value;
     currentPage = 1;
     loadProductsWithFilters(currentPage, currentCategory, currentPriceRange, currentSearchQuery);
-});
+  });
+}
 
-document.getElementById('min-price').addEventListener('input', event => {
+const minPriceInput = document.getElementById('min-price');
+if (minPriceInput) {
+  minPriceInput.addEventListener('input', event => {
     currentPriceRange.min = event.target.value ? parseFloat(event.target.value) : null;
     currentPage = 1;
     loadProductsWithFilters(currentPage, currentCategory, currentPriceRange, currentSearchQuery);
-});
+  });
+}
 
-document.getElementById('max-price').addEventListener('input', event => {
+const maxPriceInput = document.getElementById('max-price');
+if (maxPriceInput) {
+  maxPriceInput.addEventListener('input', event => {
     currentPriceRange.max = event.target.value ? parseFloat(event.target.value) : null;
     currentPage = 1;
     loadProductsWithFilters(currentPage, currentCategory, currentPriceRange, currentSearchQuery);
-});
+  });
+}
 
-document.getElementById('apply-filters').addEventListener('click', () => {
+const applyFiltersButton = document.getElementById('apply-filters');
+if (applyFiltersButton) {
+  applyFiltersButton.addEventListener('click', () => {
     currentCategory = document.getElementById('category-filter').value || null;
     currentPriceRange = {
-        min: document.getElementById('min-price').value ? parseFloat(document.getElementById('min-price').value) : null,
-        max: document.getElementById('max-price').value ? parseFloat(document.getElementById('max-price').value) : null
+      min: document.getElementById('min-price').value ? parseFloat(document.getElementById('min-price').value) : null,
+      max: document.getElementById('max-price').value ? parseFloat(document.getElementById('max-price').value) : null
     };
     currentPage = 1;
     loadProductsWithFilters(currentPage, currentCategory, currentPriceRange, currentSearchQuery);
-});
+  });
+}
+
 
 loadProductsWithFilters(currentPage);
 

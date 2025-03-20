@@ -1,10 +1,11 @@
+@php
+   $breadcrumbs = app(App\Services\BreadcrumbService::class)->generateBreadcrumbs();
+@endphp
 @if(!empty($breadcrumbs))
 <div class="container-fluid">
     <div aria-label="breadcrumb">
         <ol class="breadcrumb bg-light p-3 rounded shadow-sm">
-            @php
-            $breadcrumbs = app(App\Services\BreadcrumbService::class)->generateBreadcrumbs();
-            @endphp
+            
 
             @foreach ($breadcrumbs as $breadcrumb)
                 <li class="breadcrumb-item {{ $loop->last ? 'active' : '' }}">

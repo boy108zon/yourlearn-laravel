@@ -1,16 +1,14 @@
 @if (session('custom_alert_type') && session('custom_alert_message'))
     <div class="container-fluid">
         <div class="alert alert-{{ session('custom_alert_type') }} alert-dismissible fade show" role="alert">
-            <div class="container-fluid">
                 <div class="row justify-content-center">
-                    <div class="col-12 col-md-8 col-lg-6">
-                        <div class="alert-content">
+                    <div class="col-12 col-md-8 col-lg-6 d-flex justify-content-center align-items-center">
+                        <div class="alert-content w-100 text-center">
                             {{ session('custom_alert_message') }}
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     </div>
                 </div>
-            </div>
         </div>
     </div>
 @endif
@@ -23,19 +21,17 @@
     @endphp
     <script>
         window.addEventListener('load', () => {
-            // Toastr.js notification
             toastr.options = {
-                closeButton: true,  // Show close button
-                progressBar: true,  // Show progress bar
-                positionClass: 'toast-top-right', // Position of the toast
-                timeOut: 3000,  // Time before toast hides
-                showMethod: 'fadeIn', // Toast fade-in effect
-                hideMethod: 'fadeOut', // Toast fade-out effect
-                extendedTimeOut: 1000, // Additional time after user hovers over the toast
-                preventDuplicates: true,  // Prevent duplicate toasts
+                closeButton: true,  
+                progressBar: true,  
+                positionClass: 'toast-top-right',
+                timeOut: 3000,  
+                showMethod: 'fadeIn',
+                hideMethod: 'fadeOut',
+                extendedTimeOut: 1000, 
+                preventDuplicates: true,
             };
 
-            // Show the Toastr notification based on the session data
             if ('{{ $swalType }}' === 'success') {
                 toastr.success('{{ $swalMessage }}');
             } else if ('{{ $swalType }}' === 'error') {

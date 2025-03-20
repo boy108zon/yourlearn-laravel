@@ -23,6 +23,7 @@ class Product extends Model implements Auditable
         'price',         
     ];
 
+  
     public function transformAudit(array $data): array
     {
         Arr::set($data, 'custom',  json_encode(array('order_id'=> session('order_id'))));
@@ -39,6 +40,17 @@ class Product extends Model implements Auditable
         return $this->belongsToMany(Category::class, 'category_product', 'product_id', 'category_id')->using(CategoryProduct::class);
     }
 
-    
+    public function promoCodes()
+    {
+        return $this->belongsToMany(PromoCodes::class, 'promo_code_product', 'product_id', 'promo_code_id');
+    }
+
+
+    public function carts()
+    {
+        return $this->belongsToMany(Cart::class, 'cart_items')
+                    ->withPivot('quantity', 'price') 
+                    ->withTimestamps();
+    }
 
 }   

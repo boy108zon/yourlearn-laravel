@@ -10,15 +10,21 @@ class Order extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'guest_id','total_price', 'status', 'shipping_address', 'billing_address', 'payment_method', 'tracking_number'
+        'user_id','cart_id','guest_id','email','first_name','last_name','total_price','status', 'shipping_address', 'billing_address', 'payment_method', 'tracking_number'
     ];
 
     public function products()
     {
-        return $this->belongsToMany(Product::class)->withPivot('quantity', 'price')->withTimestamps();
+        return $this->belongsToMany(Product::class)->withPivot('quantity', 'price','discount_amount')->withTimestamps();
     }
 
-   
+    
+    public function cart()
+    {
+        return $this->hasOne(Cart::class, 'session_id', 'guest_id'); // Assuming guest_id is how the cart is identified
+    }
+
+    
     public function user()
     {
         return $this->belongsTo(User::class);

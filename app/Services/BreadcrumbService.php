@@ -12,7 +12,7 @@ class BreadcrumbService
         $parsedUrl = parse_url($currentUrl, PHP_URL_PATH);  
         $currentUrlPath = ltrim($parsedUrl, '/');
         $urlSegments = explode('/', $currentUrlPath);
-
+        //dd($urlSegments[0]);
         $menu = Menu::where('url', '/' . $urlSegments[0])->first();
         
         if (!empty($menu)) {

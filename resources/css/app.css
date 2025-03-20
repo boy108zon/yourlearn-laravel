@@ -59,12 +59,11 @@ h4 {
     background: #FFF;
 }
 
-
 /* Sidebar Elements Style */
 
 .sidebar-logo {
     padding: 1.15rem;
-    padding: 16px;
+    padding: 12px;
     background-color: #ffffff;
     border-bottom: 1px solid #dee2e6; 
 }
@@ -444,3 +443,6 @@ html[data-bs-theme="light"] .theme-toggle .fa-sun {
     }
   }
   
+  #order-products-table .table {
+    --bs-table-bg:  #FFF;
+  }

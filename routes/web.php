@@ -7,9 +7,11 @@ use App\Http\Controllers\MenusController;
 use App\Http\Controllers\LogActivityController;
 use App\Http\Controllers\SiteController;
 use App\Http\Controllers\ProductsController;
+use App\Http\Controllers\OrdersController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CategoriesController;
+use App\Http\Controllers\PromoCodesController;
 use Illuminate\Support\Facades\Route;
 
 // Auth Routes
@@ -22,15 +24,14 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 Route::get('/cart', [CartController::class, 'getCart'])->name('cart.index');
 Route::get('/cart/add/{productId}', [CartController::class, 'addProductToCart'])->name('cart.add');
-Route::delete('/cart/remove/{productId}', [CartController::class, 'removeProductFromCart'])->name('cart.remove');
 Route::post('/cart/clear', [CartController::class, 'clearCart'])->name('cart.clear');
 Route::put('/cart/update/{productId}', [CartController::class, 'updateCart'])->name('cart.update');
 Route::get('/checkout/index', [CartController::class, 'clearCart'])->name('checkout.index');
-Route::delete('/cart/remove/{productId}', [CartController::class, 'removeProductFromCart'])->name('cart.remove');
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
 Route::post('/checkout/process', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
 Route::get('/checkout/success', [CheckoutController::class, 'success'])->name('checkout.success');
-
+Route::delete('/cart/remove/{cartId}/{productId}', [CartController::class, 'removeProductFromCart'])->name('cart.remove');
+Route::post('checkout/applyPromoCode', [CheckoutController::class, 'applyPromoCode'])->name('checkout.applyPromoCode');
 
 // User Routes with Permissions
 Route::prefix('users')->name('users.')->middleware('permission:list-users')->group(function() {
@@ -109,6 +110,31 @@ Route::prefix('products')->name('products.')->middleware('permission:list-produc
     Route::put('{product}', [ProductsController::class, 'update'])->name('update')->middleware('permission:edit-product');
     Route::delete('{product}', [ProductsController::class, 'destroy'])->name('destroy')->middleware('permission:remove-product');
 
+});
+
+Route::prefix('orders')->name('orders.')->middleware('permission:list-orders')->group(function () {
+    Route::get('/', [OrdersController::class, 'index'])->name('index');
+    Route::get('create', [OrdersController::class, 'create'])->name('create')->middleware('permission:create-order');
+    Route::get('{order}/show', [OrdersController::class, 'show'])->name('show')->middleware('permission:show-order');
+    Route::post('store', [OrdersController::class, 'store'])->name('store')->middleware('permission:create-order');
+    Route::get('{order}/edit', [OrdersController::class, 'edit'])->name('edit')->middleware('permission:edit-order');
+    Route::post('{order}', [OrdersController::class, 'update'])->name('update')->middleware('permission:edit-order');
+    Route::put('{order}', [OrdersController::class, 'update'])->name('update')->middleware('permission:edit-order');
+    Route::delete('{order}', [OrdersController::class, 'destroy'])->name('destroy')->middleware('permission:remove-order');
+
+});
+
+
+Route::prefix('promocodes')->name('promocodes.')->middleware('permission:list-promo-codes')->group(function () {
+    Route::get('/', [PromoCodesController::class, 'index'])->name('index');
+    Route::get('create', [PromoCodesController::class, 'create'])->name('create')->middleware('permission:create-promo-code');
+    Route::post('store', [PromoCodesController::class, 'store'])->name('store')->middleware('permission:create-promo-code');
+
+    // Edit and update routes
+    Route::get('{promoCode}/edit', [PromoCodesController::class, 'edit'])->name('edit')->middleware('permission:edit-promo-code');
+    Route::put('{promoCode}/update', [PromoCodesController::class, 'update'])->name('update')->middleware('permission:edit-promo-code');
+
+    Route::delete('{promoCode}', [PromoCodesController::class, 'destroy'])->name('destroy')->middleware('permission:remove-promo-code');
 });
 
 Route::prefix('log-activity')->name('log-activity.')->middleware('permission:log-activity')->group(function () {

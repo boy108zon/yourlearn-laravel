@@ -51,14 +51,15 @@ document.addEventListener('DOMContentLoaded', () => {
             case 'products.index':
                 Filters.applyFilter('products');
                 break;
+            case 'orders.index':
+                    Filters.applyFilter('orders');
+                    break; 
+            case 'promocodes.index':
+                Filters.applyFilter('promocodes');
+                break;                 
             default:
                 console.log("No matching module found for filter application");
                 break;
         }
     }  
-
-
-    
-
-    
 });

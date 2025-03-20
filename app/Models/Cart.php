@@ -8,7 +8,7 @@ class Cart extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'session_id','status'];
+    protected $fillable = ['user_id', 'session_id','discount_amount','applied_discount_type','applied_discount','promo_code','status'];
 
     const STATUS_PENDING = 'pending';
     const STATUS_COMPLETED = 'completed';
@@ -50,7 +50,12 @@ class Cart extends Model
         $this->status = self::STATUS_ABANDONED;
         $this->save();
     }
-    
+   
+    public function order()
+    {
+        return $this->hasOne(Order::class);
+    }
+
     public function items()
     {
         return $this->hasMany(CartItem::class);
@@ -75,4 +80,12 @@ class Cart extends Model
             'session_id' => $sessionId,
         ]);
     }
+
+    public function products()
+    {
+        return $this->belongsToMany(Product::class, 'cart_items')
+                    ->withPivot('quantity', 'price') 
+                    ->withTimestamps();
+    }
+
 }

@@ -22,11 +22,7 @@ class RolesDataTable extends DataTable
         $this->userPermissions = Auth::user()->availablePermissions()->pluck('slug');
     }
     
-    /**
-     * Build the DataTable class.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query Results from query() method.
-     */
+   
     public function dataTable($query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
