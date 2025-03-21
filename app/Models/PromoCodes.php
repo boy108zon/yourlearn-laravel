@@ -43,12 +43,4 @@ class PromoCodes extends Model
         return $this->discount_amount;
     }
 
-
-    public function redeemCount()
-    {
-        return $this->products()
-                    ->join('order_product', 'order_product.product_id', '=', 'promo_code_product.product_id')
-                    ->groupBy('promo_code_product.product_id')
-                    ->count(); 
-    }
 }

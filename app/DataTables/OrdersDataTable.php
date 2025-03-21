@@ -116,10 +116,7 @@ class OrdersDataTable extends DataTable
             Column::make('id')->width('1%'),
             Column::make('customer_name')->title('Customer Name')->width('20%'),
             Column::make('email')->title('Email')->width('20%'),
-            //Column::make('total_price')->title('Total Amount')->width('15%'),
-            //Column::make('payment_method')->title('Pay Way')->width('10%'),
-            //Column::make('tracking_number')->title('TRK No')->width('15%'),
-           
+          
             Column::computed('placed_by')->title('Placed By')->width('10%'),
             Column::make('created_at')->title('Order Date')->width('15%'),
             Column::make('status')->title('Status')->width('10%'),

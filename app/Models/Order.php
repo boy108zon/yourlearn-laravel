@@ -21,7 +21,7 @@ class Order extends Model
     
     public function cart()
     {
-        return $this->hasOne(Cart::class, 'session_id', 'guest_id'); // Assuming guest_id is how the cart is identified
+        return $this->hasOne(Cart::class, 'id', 'cart_id'); 
     }
 
     

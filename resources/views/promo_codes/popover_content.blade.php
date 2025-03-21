@@ -1,4 +1,4 @@
-<table class="table table-sm table-bordered mb-0">
+<table class="table table-sm table-bordered mb-0 w-100">
     <tbody>
         <tr>
             <td><strong>Remaining Time</strong></td>
@@ -9,8 +9,8 @@
             <td>{{ $promocode->products()->count() }}</td>
         </tr>
         <tr>
-            <td><strong>Redeem Count Promo Code</strong></td>
-            <td>{{ $redeemCount }}</td>
+            <td><strong>Used In Orders</strong></td>
+            <td>{{$usageCountInOrders }}  times.</td>
         </tr>
         
     </tbody>

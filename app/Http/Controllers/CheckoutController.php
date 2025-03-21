@@ -81,11 +81,11 @@ class CheckoutController extends Controller
     public function success(Request $request){
 
         $showSidebar = false;
-        $order = Order::with('products')->where('id', session('order_id'))->first();
+        $order = Order::with('products','cart')->where('id', session('order_id'))->first();
         if (!$order) {
             return redirect()->route('site')->with('error', 'Order not found.');
         }
-
+       
         if (session()->has('order_id')) {
             session()->forget('order_id');
         }

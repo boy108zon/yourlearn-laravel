@@ -51,9 +51,7 @@ class OrdersController extends Controller
     {
         $order = $order->with([
             'products',
-            'cart' => function ($query) {
-                $query->orWhereNull('session_id');
-            }
+            'cart'
         ])->find($order->id);
         
         return view('orders.edit', compact('order'));
@@ -83,13 +81,12 @@ class OrdersController extends Controller
 
     public function show(Order $order)
     {
+        
         $order = $order->with([
             'products',
-            'cart' => function ($query) {
-                $query->orWhereNull('session_id');
-            }
+            'cart' 
         ])->find($order->id);
-        
+       
         return view('orders.show', compact('order'));  
     }
 
@@ -117,8 +114,4 @@ class OrdersController extends Controller
         ]);
     }
 
-    private function generateOrderNumber()
-    {
-        return 'ORD-' . strtoupper(uniqid());
-    }
 }

@@ -38,13 +38,17 @@ class PromoCodesDataTable extends DataTable{
                 ->editColumn('code', function ($promocode) { 
                     $remainingDays = $this->calculateRemainingDays($promocode->start_date, $promocode->end_date);
                     $remainingDays =($remainingDays <= 0) ? 'Expired' : $remainingDays . ' days left';
-                    $redeemCount = $promocode->redeemCount($promocode->code);
-                    $popoverContent = view('promo_codes.popover_content', compact('promocode', 'remainingDays','redeemCount'))->render();
+                    $usageCountInOrders = PromoCodes::where('code', $promocode->code)
+                    ->join('carts', 'carts.promo_code', '=', 'promo_codes.code')  
+                    ->join('orders', 'orders.cart_id', '=', 'carts.id')           
+                    ->count('orders.id');      
+                    $popoverContent = view('promo_codes.popover_content', compact('promocode', 'remainingDays','usageCountInOrders'))->render();
                     
                     return "<a href='javascrpt:void(0);' class='link-dark link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover position-relative'
                             data-bs-toggle='popover' 
                             data-bs-trigger='focus' 
                             data-bs-title='Info: " . e($promocode->code) . "' 
+                            data-bs-placement='right'
                             data-bs-content='".e($popoverContent)."'>
                             ".e(ucfirst($promocode->code))."
                         </a>";
