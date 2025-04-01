@@ -23,8 +23,6 @@ class Menu extends Model
         'icon'
     ];
 
-   
-
     public function roles()
     {
         return $this->belongsToMany(Role::class, 'role_menu');

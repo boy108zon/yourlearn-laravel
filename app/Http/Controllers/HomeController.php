@@ -13,8 +13,6 @@ class HomeController extends Controller
 
     public function index()
     {
-         $user = auth()->user();
-         $roles = $user->roles;
          return view('home.index');
     }
 }

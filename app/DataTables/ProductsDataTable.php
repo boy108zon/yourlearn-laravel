@@ -16,13 +16,14 @@ use Carbon\Carbon;
 class ProductsDataTable extends DataTable
 {
     protected $userPermissions;
-    
+    protected $filesystemDisk;
+
     public function __construct()
     {
+        $this->filesystemDisk = env('FILESYSTEM_DISK', 'public');
         $this->userPermissions = Auth::user()->availablePermissions()->pluck('slug');
     }
     
-   
     public function dataTable($query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
@@ -35,14 +36,40 @@ class ProductsDataTable extends DataTable
                 return '' . ucfirst($product->name) . '';
             })
             ->editColumn('name', function ($product) {
-                $imageUrl = app(ProductImageService::class)->getImageUrl($product->image_url, 'public'); 
-                return '<a href="javascrpt:void(0);" class="link-dark link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover position-relative"
-                            data-bs-toggle="popover" 
-                            data-bs-trigger="focus" 
-                            data-bs-title="' . e($product->name) . '" 
-                            data-bs-content="<img src=\'' . $imageUrl . '\' class=\'img-fluid\' alt=\'' . e($product->name) . '\'>">
-                            '.ucfirst($product->name).'
-                        </a>';
+                $firstImage = $product->images()->where(['is_active' => 1])->first();
+            
+                if (!$firstImage) {
+                    return ucfirst($product->name);
+                }
+            
+                $productId = $product->id;
+                $averageRating = $product->average_rating ?? 0; // Correct variable name
+                $ratingCount = $product->rating_count ?? 0;
+            
+                $productReviews = view('products.product-reviews', [
+                    'productId' => $productId,
+                    'averageRating' => $averageRating, // Pass the correct variable
+                    'ratingCount' => $ratingCount
+                ])->render();
+            
+                $imageUrl = app(ProductImageService::class)->getImageUrl($firstImage->image_url, $this->filesystemDisk);
+            
+                $popoverContent = '
+                    <div class="d-flex flex-column align-items-center justify-content-center w-100" style="max-height: 90vh; overflow: auto; background-color: #fff; padding: 10px;">
+                        <img src="' . e($imageUrl) . '" class="img-fluid w-100" alt="' . e($product->name) . '" style="object-fit: cover; height: auto;">
+                        <div class="mt-2">' . $productReviews . '</div>
+                    </div>';
+            
+                return '<a href="javascript:void(0);" 
+                    class="link-dark link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover position-relative"
+                    data-bs-toggle="popover" 
+                    data-bs-trigger="focus" 
+                    data-bs-title="' . e($product->name) . '" 
+                    data-bs-content="' . htmlspecialchars($popoverContent, ENT_QUOTES, 'UTF-8') . '"
+                    data-bs-html="true" 
+                    data-bs-placement="bottom">
+                    ' . ucfirst(e($product->name)) . '
+                </a>';
             })
             ->editColumn('is_active', function ($product) {
                 $badgeClass = $product->is_active == 1 ? 'badge text-bg-primary rounded-pill' : 'badge text-bg-danger rounded-pill';
@@ -66,6 +93,18 @@ class ProductsDataTable extends DataTable
                 Carbon::parse($endDate)->endOfDay()
             ]);
         }
+
+        if (request()->filled('filterPrice')) {
+            $priceFilter = request()->input('filterPrice');
+    
+            if ($priceFilter === 'low') {
+                $query->orderBy('price', 'asc'); 
+            } elseif ($priceFilter === 'high') {
+                $query->orderBy('price', 'desc'); 
+            }
+        }
+
+        $query->with('images');
 
         return $query;
     }

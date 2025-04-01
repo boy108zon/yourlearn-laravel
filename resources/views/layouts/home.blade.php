@@ -22,7 +22,7 @@
             @if(!empty($showNavbar) && ($showNavbar ?? true)) 
                 @include('partials.navbar')
             @endif
-            <main class="content px-3 py-2">
+            <main class="content px-1 py-2">
                 @include('components.tall-toasts')
                 @include('partials.breadcrumbs')
                 @yield('content')

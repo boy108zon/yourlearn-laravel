@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\CartService;
+use App\Models\PromoCodes;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 
@@ -15,22 +16,25 @@ class CartController extends Controller
         $this->cartService = $cartService;
     }
 
-    public function getCart()
+    public function getCart(Request $request)
     {
+        $auto_promo_code = $request->input('pmcd', 0);
         $showSidebar = false;
         $cartItems = $this->cartService->getCartContents();
+       
         $cartTotal = $cartItems->sum(function ($cartItem) {
             return $cartItem->quantity * $cartItem->product->price;
         });
-    
-        return view('cart.index', compact('cartItems', 'cartTotal', 'showSidebar'));
+       
+        return view('cart.index', compact('cartItems', 'cartTotal', 'showSidebar','auto_promo_code'));
     }
     
     public function addProductToCart(Request $request, $productId)
     {
         
+        $auto_promo_code = $request->input('pmcd', 0);
         $quantity = $request->input('quantity', 1);
-        $result=$this->cartService->addProductToCart($productId, $quantity);
+        $result=$this->cartService->addProductToCart($productId, $quantity,$auto_promo_code);
         
         if(!$result){
             return redirect()->route('cart.index')->with('swal', [
@@ -38,7 +42,9 @@ class CartController extends Controller
                 'type' => 'error',
             ]);
         }
+        
         return redirect()->route('cart.index')->with('success', 'Product added to cart!');
+
     }
 
     public function removeProductFromCart($cartId, $productId)

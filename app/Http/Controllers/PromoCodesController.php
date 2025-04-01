@@ -91,7 +91,10 @@ class PromoCodesController extends Controller
     {
      
         $promoCode->delete();
-        return redirect()->route('promocodes.index')->with('success', 'Promo Code deleted successfully!');
+        return redirect()->route('promocodes.index')->with('swal', [
+            'message' => 'Promo Code removed successfully!',
+            'type' => 'success',
+        ]);
     }
 
 }

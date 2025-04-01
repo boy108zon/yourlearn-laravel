@@ -2,7 +2,7 @@
 @if($actions)
     <div class="dropdown">
         <button class="btn btn-sm btn-bd-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-            Choose
+            Options
         </button>
         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
                 @foreach($actions as $action)

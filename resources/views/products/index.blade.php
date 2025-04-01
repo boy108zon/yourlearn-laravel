@@ -14,8 +14,14 @@
                     <div class="col-md-2" data-filter="date">
                         <input type="date" id="end_date" class="form-control" placeholder="End Date" />
                     </div>
-
-                <div class="col-md-2 d-flex align-items-center">
+                    <div class="col-md-2" data-filter="select">
+                        <select id="filterPrice" class="form-select">
+                           <option value="">Filter by Price</option>
+                           <option value="low">Low to High</option>
+                           <option value="high">High to Low</option>
+                        </select>
+                    </div>
+                   <div class="col-md-2 d-flex align-items-center">
                         <i class="bi bi-funnel fs-3 text-primary" id="applyFilter" style="cursor: pointer;"></i>
                     </div>
                 </div>

@@ -1,5 +1,5 @@
 
-@if($userPermissions->contains('edit-product') || $userPermissions->contains('create-product') || $userPermissions->contains('remove-product'))
+@if($userPermissions->contains('edit-product') || $userPermissions->contains('create-product') || $userPermissions->contains('remove-product') || $userPermissions->contains('edit-main-product-images') || $userPermissions->contains('edit-thumbnails-product'))
     <div class="dropdown">
         <button class="btn btn-sm btn-bd-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
             Choose
@@ -11,8 +11,13 @@
             @endif
 
             
-            @if($userPermissions->contains('assign-permissions-product'))
-             <!--<li><a href="{{ route('roles.permissions', $category->id) }}" class="dropdown-item">Assign Permissions</a></li>-->
+            @if($userPermissions->contains('edit-main-product-images'))
+               <li><a href="{{ route('products.editproductImages', $product->id) }}" class="dropdown-item">Product Images</a></li>
+            @endif
+
+             
+            @if($userPermissions->contains('edit-thumbnails-product'))
+              <!--  <li><a href="{{ route('products.editproductThumnails', $product->id) }}" class="dropdown-item">Product Thumbnail</a></li>-->
             @endif
 
             @if($userPermissions->contains('remove-product'))

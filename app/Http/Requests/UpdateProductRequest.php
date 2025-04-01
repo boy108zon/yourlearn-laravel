@@ -23,7 +23,8 @@ class UpdateProductRequest extends FormRequest
             'description' => 'nullable|string',
             'is_active' => 'required|boolean',
             'category_id' => 'required|exists:categories,id',
-            'image_url' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'weight' => 'nullable|numeric|min:0', 
+          
         ];
     }
 
@@ -46,7 +47,7 @@ class UpdateProductRequest extends FormRequest
             'slug' => 'product slug',
             'price' => 'product price',
             'description' => 'product description',
-            'image_url' => 'product image URL',
+            'images' => 'product images URL',
             'is_active' => 'product status',
             'category_id' => 'category',
         ];

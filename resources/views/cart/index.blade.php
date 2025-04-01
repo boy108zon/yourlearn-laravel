@@ -22,6 +22,7 @@
             </a>
         @else
             <div class="row">
+
                 <div class="col-md-8">
                     <table class="table table-bordered">
                         <thead>
@@ -87,34 +88,68 @@
                 </div>
 
                 <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-header">
-                            <strong>Cart Summary</strong>
-                        </div>
-                        <div class="card-body">
-                            <ul class="list-group">
-                                <li class="list-group-item d-flex justify-content-between">
-                                    <span>Subtotal</span>
-                                    <span>${{ number_format($cartTotal, 2) }}</span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between">
-                                    <span>Shipping</span>
-                                    <span>Free</span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between">
-                                    <strong>Total</strong>
-                                    <strong>${{ number_format($cartTotal, 2) }}</strong>
-                                </li>
-                            </ul>
-                            <a href="{{ route('checkout.index') }}" class="btn btn-sm btn-bd-primary w-100 mt-3">
-                                <i class="bi bi-cart-check"></i> Proceed to Checkout
-                            </a>
+                  <ul class="list-group mb-3">
+                    @php
+                        $cartTotal = $cartItems->sum(function($item) {
+                            return $item->product->price * $item->quantity;
+                        });
+
+                        $totalDiscount = $cartTotal;
+
+                        if ($cartItems->first() && $cartItems->first()->applied_discount) {
+                            $discount = $cartItems->first()->applied_discount;
+                            if ($cartItems->first()->applied_discount_type == 'percentage') {
+                                $totalDiscount = $cartTotal - ($cartTotal * ($discount / 100));  
+                            } else {
+                                $totalDiscount = $cartTotal - $discount; 
+                            }
+                        }
+                    @endphp
+
+                    @forelse ($cartItems ?? [] as $cartItem)  
+                        <li class="list-group-item d-flex justify-content-between lh-condensed">
+                            <div>
+                                <h6 class="my-0"><strong>{{ $cartItem->product->name }} </strong></h6>
+                                <small class="text-muted">{{ $cartItem->product->description }}</small>
+                            </div>
+                            <span class="text-muted">${{ number_format($cartItem->product->price, 2) }}</span>
                             
-                        </div>
-                    </div>
-                </div>
+                        </li>
+                    @empty
+                        <li class="list-group-item d-flex justify-content-between lh-condensed">
+                            <span class="text-muted">Your cart is empty</span>
+                        </li>
+                    @endforelse
+
+                    @if($cartItems && $cartItems->first() && $cartItems->first()->promo_code)
+                        <li class="list-group-item d-flex justify-content-between bg-light">
+                            <div class="text-success">
+                                <h6 class="my-0"><strong>Promo code</strong></h6>
+                                <small>{{ $cartItems->first()->promo_code }}</small>
+                            </div>
+                            <span class="text-success">
+                                @if($cartItems->first()->applied_discount_type == 'percentage')
+                                    {{ number_format($cartItems->first()->applied_discount, 2) }}%
+                                @else
+                                    ${{ number_format($cartItems->first()->applied_discount, 2) }}
+                                @endif
+                            </span>
+                        </li>
+                    @endif
+
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span><strong>Total (USD)</strong></span>
+                        <strong>${{ number_format($totalDiscount, 2) }}</strong> 
+                    </li>
+                 </ul>
+                
+                 <a href="{{ route('checkout.index') }}" class="btn btn-md btn-bd-primary w-100 mt-3">
+                   <i class="bi bi-cart-check"></i> Proceed to Checkout
+                </a>
+                            
+               </div>
+
             </div>
-            
         @endif
     </div>
 @endsection

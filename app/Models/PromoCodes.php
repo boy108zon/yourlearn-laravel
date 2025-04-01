@@ -38,9 +38,10 @@ class PromoCodes extends Model
     {
         if ($this->discount_type === 'percentage') {
             return $price * ($this->discount_amount / 100);
+        }elseif ($this->discount_type === 'fixed') {
+            return $this->discount_amount;
+        }else{
+            return 0;
         }
-
-        return $this->discount_amount;
     }
-
 }

@@ -1,10 +1,13 @@
 
-//import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import $ from 'jquery';
 import { Filters } from './modules/filters'; 
 import './modules/checkboxHandler';
 import loadProductsWithFilters from './modules/loadProductsWithFilters';
+import { initializeZoom, setupZoomOnModal } from  './modules/photoZoom.js';
+import '../css/rating.css';
+import '../css/productdetails.css';
+import './modules/rating.js';
 
 $(document).ready(function() {
     $.ajaxSetup({
@@ -12,8 +15,6 @@ $(document).ready(function() {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-
-    
 });
 
 document.querySelector("#sidebar-toggle")?.addEventListener("click", () => {
@@ -32,6 +33,22 @@ if (localStorage.getItem("light")) {
     document.documentElement.setAttribute('data-bs-theme', 'dark');
 }
 
+const initializeDropzone = () => {
+    const dropzoneElement = document.querySelector('.dropzone'); 
+    if (dropzoneElement) {
+      initializeDropzone();
+    }
+};
+
+const initializeZoomEffects = () => {
+    const zoomElement = document.querySelector('.zoom-effects'); 
+    if (zoomElement) {
+        initializeZoom('.zoom-effects');
+        setupZoomOnModal('#imageCarouselModal', '.zoom-effects');
+    }
+};
+
+
 document.addEventListener('DOMContentLoaded', () => {
 
     const filterForm = document.getElementById('filter-form');
@@ -39,7 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (currentModule) {
         switch (currentModule) {
             case 'users.index':
-                console.log('ff');
                 Filters.applyFilter('users');
                 break;
             case 'roles.index':
@@ -61,5 +77,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log("No matching module found for filter application");
                 break;
         }
-    }  
+    } 
+     
+    initializeDropzone();
+    initializeZoomEffects();
+    
 });
+

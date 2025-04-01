@@ -60,13 +60,18 @@ const loadProductsWithFilters = (page = 1, categoryId = currentCategory, priceRa
                     return `<span class="badge bg-primary">${category.name}</span>`;
                 }).join(' ');
 
+                const productImages = product.images || [];
+
+                const primaryImage = productImages.find(image => image.is_primary === 1);
+                const ProductImageUrl = primaryImage ? `${primaryImage.image_url}` : (productImages[0] ? `${productImages[0].image_url}` : '');
+                
                 const productCard = `
                     <div class="col-md-3 col-sm-6 py-2">
                         <div class="product-grid border border-1  shadow-sm">
                             <div class="product-image">
                                 <a href="#" class="image">
-                                    <img class="pic-1" src="/storage/${product.image_url}" alt="${product.name}" loading="lazy">
-                                    <img class="pic-2" src="/storage/${product.image_url}" alt="${product.name}" loading="lazy">
+                                    <img class="pic-1" src="/storage/${ProductImageUrl}" alt="${product.name}" loading="lazy">
+                                    <img class="pic-2" src="/storage/${ProductImageUrl}" alt="${product.name}" loading="lazy">
                                 </a>
                                 ${
                                   product.stock_quantity <= 0
@@ -79,7 +84,7 @@ const loadProductsWithFilters = (page = 1, categoryId = currentCategory, priceRa
                                     <i class="bi bi-heart"></i>
                                 </a>
                                 <ul class="product-links">
-                                    <li><a href="#"><i class="bi bi-search"></i></a></li>
+                                    <li><a href="/${product.slug}/${product.id}/buy"><i class="bi bi-search"></i></a></li>
                                     <li><a href="/cart/add/${product.id}"><i class="bi bi-cart-plus"></i></a></li>
                                     <li><a href="#"><i class="bi bi-shuffle"></i></a></li>
                                 </ul>
@@ -102,7 +107,10 @@ const loadProductsWithFilters = (page = 1, categoryId = currentCategory, priceRa
             isLastPage = data.products.current_page >= data.products.last_page; 
 
             const loadMoreButton = document.getElementById('load-more');
-            loadMoreButton.style.display = isLastPage ? 'none' : 'block';  
+            if (loadMoreButton) {
+              loadMoreButton.style.display = isLastPage ? 'none' : 'block';
+            }
+            
         } else {
             if (page === 1) {
                 if (productContainer) {

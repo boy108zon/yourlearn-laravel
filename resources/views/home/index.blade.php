@@ -2,6 +2,9 @@
 
 @section('content')
     <div class="container-fluid">
+        <div class="row">
+            <div class="container"></div>
+        </div>
         <h4>Admin Dashboard</h4>
         <div class="row">
             <div class="col-12 col-md-6 d-flex">
@@ -78,3 +81,4 @@
         </div>
     </div>
 @endsection
+

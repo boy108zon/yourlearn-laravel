@@ -17,10 +17,12 @@ use Carbon\Carbon;
 class OrdersDataTable extends DataTable
 {
     protected $userPermissions;
+    protected $user;
 
     public function __construct()
     {
         $this->userPermissions = Auth::user()->availablePermissions()->pluck('slug');
+        $this->user = Auth::user();
     }
 
     public function dataTable(QueryBuilder $query): EloquentDataTable
@@ -54,31 +56,33 @@ class OrdersDataTable extends DataTable
             ->rawColumns(['action','placed_by','customer_name','cart_status','status']);
     }
 
-   
     public function query(Order $model): QueryBuilder
     {
         $query = $model->newQuery();
+    
+        if ($this->user->hasRole('admin')) {
+            $query->with(['products', 'cart']);
+        } else {
+            
+            $query->where('user_id', $this->user->id)
+                ->with(['products', 'cart']);
+        }
+    
         if (request()->filled('start_date') && request()->filled('end_date')) {
             $query->whereBetween('created_at', [
                 Carbon::parse(request()->input('start_date'))->startOfDay(),
                 Carbon::parse(request()->input('end_date'))->endOfDay()
             ]);
         }
-        
-        $query->with(['products', 'cart' => function ($query) {
-            $query->where('status', '!=', 'pending')->orWhereNull('session_id');
-        }]);
-        
     
         return $query;
     }
-    
     
     public function html(): HtmlBuilder
     {
         return $this->builder()
             ->setTableId('orders-table')
-            ->columns($this->getColumns())
+            ->columns($this->user->hasRole('admin') ? $this->getColumnsAdmin() : $this->getColumnsGeneral())
             ->minifiedAjax()
             ->orderBy(1)
             ->selectStyleSingle()
@@ -106,7 +110,7 @@ class OrdersDataTable extends DataTable
             ])->postAjax(route('orders.index'));
     }
 
-    public function getColumns(): array
+    public function getColumnsAdmin(): array
     {
         $canEdit = $this->userPermissions->contains('edit-order');
         $canDelete = $this->userPermissions->contains('remove-order');
@@ -116,12 +120,37 @@ class OrdersDataTable extends DataTable
             Column::make('id')->width('1%'),
             Column::make('customer_name')->title('Customer Name')->width('20%'),
             Column::make('email')->title('Email')->width('20%'),
-          
             Column::computed('placed_by')->title('Placed By')->width('10%'),
             Column::make('created_at')->title('Order Date')->width('15%'),
             Column::make('status')->title('Status')->width('10%'),
             Column::make('cart_status')->title('Cart Status')->width('10%'),
                   
+        ];
+
+        if ($canEdit || $canDelete || $canShow) {
+
+            $columns[] = Column::computed('action')
+                ->exportable(true)
+                ->printable(true)
+                ->width('15%')
+                ->addClass('text-center');
+        }
+
+        return $columns;
+    }
+
+    public function getColumnsGeneral(): array
+    {
+        $canEdit = $this->userPermissions->contains('edit-order');
+        $canDelete = $this->userPermissions->contains('remove-order');
+        $canShow=$this->userPermissions->contains('show-order');
+
+        $columns = [
+            Column::make('id')->width('1%'),
+            Column::make('customer_name')->title('Name')->width('20%'),
+            Column::make('email')->title('Email')->width('20%'),
+            Column::make('created_at')->title('Order Date')->width('15%'),
+            Column::make('status')->title('Status')->width('10%'),
         ];
 
         if ($canEdit || $canDelete || $canShow) {

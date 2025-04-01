@@ -217,7 +217,7 @@
                 </div>
 
                 <hr class="mb-4">
-                <button class="btn btn btn-bd-primary btn-sm btn-block" type="submit">Continue to checkout</button>
+                <button class="btn btn-bd-primary btn-md btn-block" type="submit">Pay Now</button>
             </form>
         </div>
     </div>

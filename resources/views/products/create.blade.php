@@ -14,7 +14,7 @@
                     @csrf
 
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="mb-3">
                                 <label for="category_id" class="form-label">Categories <span class="text-danger">*</span></label>
                                 <select id="category_id" name="category_id[]" class="form-control @error('category_id') is-invalid @enderror" multiple required>
@@ -31,7 +31,9 @@
                                 @enderror
                             </div>
                         </div>
+                    </div>
 
+                    <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="name" class="form-label">Product Name <span class="text-danger">*</span></label>
@@ -40,7 +42,17 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
+                           
                         </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="slug" class="form-label">Slug <small class="form-text text-muted">(Leave To Generate Automatically)</small> </label>
+                                <input type="text" id="slug" name="slug" class="form-control @error('slug') is-invalid @enderror" value="{{ old('slug') }}">
+                                @error('slug')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>     
                     </div>
 
                     <div class="row">
@@ -66,7 +78,7 @@
 
                         <div class="col-md-4">
                             <div class="mb-3">
-                                <label for="sku" class="form-label">SKU <span class="text-danger">Leave To Generate Automatic</span> </label>
+                                <label for="sku" class="form-label">SKU <small class="form-text text-muted">(Leave To Generate Automatically)</small><span class="text-danger"></span> </label>
                                 <input type="text" id="sku" name="sku" class="form-control @error('sku') is-invalid @enderror" value="{{ old('sku') }}">
                                 @error('sku')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -101,17 +113,7 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="image_url" class="form-label">Product Image</label>
-                                <input type="file" id="image_url" name="image_url" class="form-control @error('image_url') is-invalid @enderror">
-                                @error('image_url')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
+                        <div class="col-md-12">
                             <div class="mb-3">
                                 <label for="description" class="form-label">Description</label>
                                 <textarea id="description" name="description" class="form-control @error('description') is-invalid @enderror">{{ old('description') }}</textarea>

@@ -6,7 +6,6 @@
     <div aria-label="breadcrumb">
         <ol class="breadcrumb bg-light p-3 rounded shadow-sm">
             
-
             @foreach ($breadcrumbs as $breadcrumb)
                 <li class="breadcrumb-item {{ $loop->last ? 'active' : '' }}">
                     @if ($loop->last)

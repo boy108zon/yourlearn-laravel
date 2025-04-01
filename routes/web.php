@@ -12,6 +12,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\PromoCodesController;
+use App\Http\Controllers\RatingController;
 use Illuminate\Support\Facades\Route;
 
 // Auth Routes
@@ -21,7 +22,7 @@ Auth::routes();
 Route::get('/', [SiteController::class, 'index'])->name('site');
 Route::post('/get-products', [SiteController::class, 'getProducts']);
 Route::get('/home', [HomeController::class, 'index'])->name('home');
-
+Route::get('{slug}/{id}/buy', [SiteController::class, 'show'])->name('site.show');
 Route::get('/cart', [CartController::class, 'getCart'])->name('cart.index');
 Route::get('/cart/add/{productId}', [CartController::class, 'addProductToCart'])->name('cart.add');
 Route::post('/cart/clear', [CartController::class, 'clearCart'])->name('cart.clear');
@@ -32,6 +33,14 @@ Route::post('/checkout/process', [CheckoutController::class, 'processCheckout'])
 Route::get('/checkout/success', [CheckoutController::class, 'success'])->name('checkout.success');
 Route::delete('/cart/remove/{cartId}/{productId}', [CartController::class, 'removeProductFromCart'])->name('cart.remove');
 Route::post('checkout/applyPromoCode', [CheckoutController::class, 'applyPromoCode'])->name('checkout.applyPromoCode');
+Route::post('/products/{id}/rate', [RatingController::class, 'store'])->name('products.rate');
+
+/*Route::middleware(['auth'])->group(function () {
+    Route::post('/ratings', [RatingController::class, 'store'])->name('ratings.store');
+});
+
+Route::get('/products/{product}/ratings', [RatingController::class, 'getRatings'])->name('ratings.get');
+*/
 
 // User Routes with Permissions
 Route::prefix('users')->name('users.')->middleware('permission:list-users')->group(function() {
@@ -109,6 +118,16 @@ Route::prefix('products')->name('products.')->middleware('permission:list-produc
     Route::post('{product}', [ProductsController::class, 'update'])->name('update')->middleware('permission:edit-product');
     Route::put('{product}', [ProductsController::class, 'update'])->name('update')->middleware('permission:edit-product');
     Route::delete('{product}', [ProductsController::class, 'destroy'])->name('destroy')->middleware('permission:remove-product');
+
+    Route::get('{product}/product-images', [ProductsController::class, 'editproductImages'])->name('editproductImages')->middleware('permission:edit-main-product-images');
+    Route::post('{product}/store-product-images', [ProductsController::class, 'storeProductImages'])->name('storeProductImages')->middleware('permission:edit-main-product-images');
+    Route::post('{product}/remove-product-image', [ProductsController::class, 'removeProductImage'])->name('removeProductImage')->middleware('permission:edit-main-product-images');
+    Route::post('{product}/primary-image-status', [ProductsController::class, 'primaryImageStatus'])->name('primaryImageStatus')->middleware('permission:edit-main-product-images');
+
+    Route::get('{product}/product-thumnails', [ProductsController::class, 'editproductThumnails'])->name('editproductThumnails')->middleware('permission:edit-thumbnails-product');
+    Route::post('{product}/store-product-thumnails', [ProductsController::class, 'storeProductThumnails'])->name('storeProductThumnails')->middleware('permission:edit-thumbnails-product');
+    Route::post('{product}/remove-product-thumnails', [ProductsController::class, 'removeProductThumnails'])->name('removeProductThumnails')->middleware('permission:edit-thumbnails-product');
+    Route::post('{product}/primary-thumnails-status', [ProductsController::class, 'primaryThumnailsStatus'])->name('primaryThumnailsStatus')->middleware('permission:edit-thumbnails-product');
 
 });
 

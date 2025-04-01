@@ -40,9 +40,10 @@ class CartService
         return $cart;
     }
 
-    public function addProductToCart(int $productId, int $quantity): bool{
+    public function addProductToCart(int $productId, int $quantity,string $autopromoCode): bool{
 
-        return DB::transaction(function () use ($productId, $quantity) {
+        return DB::transaction(function () use ($productId, $quantity,$autopromoCode) {
+            
             $product = Product::find($productId);
             
             if (!$product) {
@@ -65,6 +66,10 @@ class CartService
                     'quantity' => $quantity,
                     'price' => $product->price,
                 ]);
+            }
+
+            if ($autopromoCode !== 0 && !empty($autopromoCode)) {
+                $is_autopromoCode=$this->applyPromoCode($autopromoCode);
             }
             return true;
         });
@@ -111,7 +116,7 @@ class CartService
     {
         $cart = $this->getCart();
        
-        $cartItems = $cart->items()->with(['product:id,name,image_url,price,description,sku,weight,stock_quantity'])->get();
+        $cartItems = $cart->items()->with(['product:id,name,price,description,sku,weight,stock_quantity','product.images'])->get();
         $promoCode = $cart->promo_code;  
         $discountAmount = $cart->discount_amount ?? 0; 
         $applied_discount_type=$cart->applied_discount_type;
@@ -119,7 +124,8 @@ class CartService
         $cartId = $cart->id;  
         return $cartItems = $cartItems->map(function ($cartItem) use ($promoCode, $discountAmount,$cartId,$applied_discount_type,$applied_discount) {
             if ($cartItem->product) {
-                $cartItem->product_image = $cartItem->product->image_url;
+                $firstImage = $cartItem->product->images->first();
+                $cartItem->product_image = $firstImage ? $firstImage->image_url : null;
                 $cartItem->product_name = $cartItem->product->name;  
                 $cartItem->product_price = $cartItem->product->price; 
                 $cartItem->product_description = $cartItem->product->description; 
@@ -310,12 +316,14 @@ class CartService
             'discount_amount' => $totalAfterDiscount,
         ];
     }
+
     private function calculateRemainingDays($startDate, $endDate)
     {
         $startDate = Carbon::parse($startDate);
         $endDate = Carbon::parse($endDate);
         return $endDate->diffInDays($startDate, true);
     }
+
     public function applyPromoCode(string $promoCode)
     {
         $promo = PromoCodes::where('code', $promoCode)
@@ -363,7 +371,6 @@ class CartService
             $totalDiscountAmount += $discountAmount;
 
             $cartItem->discount_amount = $finalPrice;  
-            //$cartItem->total_after_discount = $finalPrice;
             $updatedCartItems[] = $cartItem;
         }
 
@@ -385,4 +392,27 @@ class CartService
         ];
     }
 
+    public function calculateDiscount_autoPromoCode($promoCode,$productPrice){
+
+        if ($promoCode->discount_type === 'percentage') {
+            $discountValue = ($promoCode->discount_amount / 100) * $productPrice;
+            return [
+                'percentage_value' => $promoCode->discount_amount,
+                'discountValue' => $discountValue,
+                'promo_code'=>$promoCode->code
+            ];
+        } else if ($promoCode->discount_type === 'fixed') {
+            return [
+                'percentage_value' => 0, 
+                'discountValue' => $promoCode->discount_amount,
+                'promo_code'=>$promoCode->code
+            ]; 
+        }else{
+            return [
+                'percentage_value' => 0, 
+                'discountValue' => 0,
+                'promo_code'=>0
+            ]; 
+        }
+    }
 }

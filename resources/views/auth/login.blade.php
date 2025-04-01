@@ -3,6 +3,7 @@
 @section('content')
 <div class="container-fluid">
     <div class="row justify-content-center">
+        @include('components.tall-toasts')
         <div class="col-md-6">
             <div class="card mt-5">
                 <div class="card-header">{{ __('Login') }}</div>
@@ -56,11 +57,17 @@
                                 <button type="submit" class="btn btn-primary">
                                     {{ __('Login') }}
                                 </button>
-
+                                    
                                 @if (Route::has('password.request'))
                                     <a class="btn btn-link" href="{{ route('password.request') }}">
-                                        {{ __('Forgot Your Password?') }}
+                                    <i class="bi bi-person"></i> {{ __('Forgot Your Password?') }}
                                     </a>
+                                @endif
+
+                                @if (Route::has('register'))
+                                        <a class="btn btn-link" href="{{ route('register') }}">
+                                            <i class="bi bi-person"></i> {{ __('Register?') }}
+                                        </a>
                                 @endif
                             </div>
                         </div>

@@ -18,7 +18,7 @@ class CreateProductRequest extends FormRequest
             'slug' => 'nullable|string|max:255|unique:products,slug',
             'price' => 'required|numeric|min:0', 
             'description' => 'nullable|string',
-            'image_url' => 'nullable|url', 
+            
             'is_active' => 'required|boolean', 
             'category_id' => 'required|array', 
             'category_id.*' => 'exists:categories,id', 
@@ -26,7 +26,7 @@ class CreateProductRequest extends FormRequest
             'sku' => 'nullable|string|max:100|unique:products,sku',
             'stock_quantity' => 'required|integer|min:0',
             'weight' => 'nullable|numeric|min:0', 
-            'image_url' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            
         ];
     }
 
@@ -51,7 +51,7 @@ class CreateProductRequest extends FormRequest
             'slug' => 'product slug',
             'price' => 'product price',
             'description' => 'product description',
-            'image_url' => 'product image URL',
+            'images' => 'product images URL',
             'is_active' => 'product status',
             'category_id' => 'category',
         ];

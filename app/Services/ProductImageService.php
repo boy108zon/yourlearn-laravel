@@ -6,27 +6,81 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\UploadedFile;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\Facades\Image;
 
 class ProductImageService
 {
     
-    public function storeAndResizeImage(UploadedFile $file, string $folder, string $disk = null ,array $additionalParams = []): string
+    public function SaveImage(UploadedFile $file, string $folder, array $additionalParams = []): string
     {
         
-        $disk = $disk ?? config('filesystems.default');
+        $disk = config('filesystems.default');
         $fileName = $this->generateFileName($file,$additionalParams);
         $manager = new ImageManager(new Driver());
         $image = $manager->read($file);
-        $image->resize(800, 800);
         $this->storeImage($image, $folder, $fileName, $disk);
         return "{$folder}/{$fileName}";
     }
 
+    public function storeAndResizeImage(UploadedFile $file, string $folder, array $additionalParams = []): array
+    {
+        
+        $disk =  config('filesystems.default');
+        $fileName = $this->generateFileName($file,$additionalParams);
+        $manager = new ImageManager(new Driver());
+        $image = $manager->read($file);
+       
+        /*$image->resize(1200, 1200, function ($constraint) {
+            $constraint->aspectRatio();
+            $constraint->upsize();
+        });*/
+
+        $this->storeImage($image, $folder, $fileName, $disk);
+        $imagePath = "{$folder}/{$fileName}";
+
+        $thumbnailName = 'thumb_' . $fileName;
+        $thumbnail = $manager->read($file->getPathname());
+        $thumbnail->resize(100, 100, function ($constraint) {
+            $constraint->aspectRatio();
+            $constraint->upsize();
+        });
+    
+        $thumbnailPath = "{$folder}/thumbnails/{$thumbnailName}";
+        $this->storeImage($thumbnail, $folder . '/thumbnails', $thumbnailName, $disk);
+        
+
+        return [
+            'image_url' => $imagePath,
+            'thumbnail_url' => $thumbnailPath
+        ];
+    }
+
+    public function storeAndGenerateThumbnail(UploadedFile $file, string $folder, array $additionalParams = []): string
+    {
+       
+        $disk = config('filesystems.default');
+        $fileName = $this->generateFileName($file, $additionalParams);
+        
+        $manager = new ImageManager(new Driver());
+        $image = $manager->read($file);
+       
+        $thumbnailFileName = 'thumb_' . $fileName;
+        $thumbnail = $image->resize(200, 200);
+        $this->storeImage($thumbnail, $folder, $thumbnailFileName, $disk);
+        return "{$folder}/{$fileName}";
+    }
+    
     private function generateFileName(UploadedFile $file, array $additionalParams): string
     {
-        $baseName = time();
-        $baseName = $additionalParams['product_name'].'_'.$additionalParams['sku'] . '-' . $baseName;
-        $baseName = preg_replace('/[^a-z0-9]+/i', '-', ucwords(strtolower($baseName)));
+
+        $ImageRandomTime = time();
+        $originalName = $file->getClientOriginalName();
+        $fileNameWithoutExtension = pathinfo($originalName, PATHINFO_FILENAME);
+        $fileNameToLower=ucwords(strtolower($fileNameWithoutExtension));
+        
+        $fileName=$fileNameToLower.'_'.$additionalParams['product_name'].'_'.$additionalParams['sku'] . '-' . $ImageRandomTime;
+        $baseName=preg_replace('/[^a-z0-9]+/i','_',$fileName);
+
         $extension = $file->getClientOriginalExtension();
         return "{$baseName}.{$extension}";
     }
@@ -40,10 +94,11 @@ class ProductImageService
         }
     }
 
-    public function getImageUrl(string $path, string $disk = null): string
+    public function getImageUrl(?string $path): string
     {
-        $disk = $disk ?? config('filesystems.default');
-
+       
+        $disk = config('filesystems.default');
+       
         if ($disk === 'local' || $disk === 'public') {
             return $this->getLocalOrPublicUrl($path, $disk);
         }
@@ -84,9 +139,9 @@ class ProductImageService
         return 'https://bitbucket.org/your-repo-name/images/' . $path;
     }
 
-    public function deleteImage(string $path, string $disk = null): void
+    public function deleteImage(string $path): void
     {
-        $disk = $disk ?? config('filesystems.default');
+        $disk = config('filesystems.default');
         switch ($disk) {
             case 'local':
             case 'public':
@@ -130,5 +185,49 @@ class ProductImageService
         } catch (\Exception $e) {
             throw new \Exception("Error deleting file from Bitbucket: " . $e->getMessage());
         }
+    }
+
+    public function getImageSize(?string $path): int
+    {
+       
+        $disk = config('filesystems.default');
+       
+        if ($disk === 'local' || $disk === 'public') {
+            return $this->getLocalOrPublicFileSize($path);
+        }
+
+        if ($disk === 's3') {
+            return $this->getS3FileSize($path);
+        }
+
+        if ($disk === 'bitbucket') {
+            return $this->getBitbucketFileSize($path);
+        }
+
+        return 0;
+    }
+    
+    protected function getLocalOrPublicFileSize(string $path): int
+    {
+        if (Storage::disk('public')->exists($path)) {
+            return Storage::disk('public')->size($path);
+        } else {
+            return 0;
+        }
+    }
+
+    protected function getS3FileSize(string $path): int
+    {
+        // For S3, you'd use the AWS SDK or the Laravel S3 storage methods to get the file size
+        // Example using Laravel's Storage facade
+        $file = Storage::disk('s3')->get($path);
+        return strlen($file);
+    }
+
+    protected function getBitbucketFileSize(string $path): int
+    {
+        // Implement how you retrieve file size from Bitbucket
+        // Bitbucket may not allow direct file size retrieval, so adjust accordingly
+        return 0;
     }
 }

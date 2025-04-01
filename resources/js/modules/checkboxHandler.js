@@ -1,6 +1,8 @@
 
 document.addEventListener('DOMContentLoaded', function () {
-    
+
+    let totalChildren = 0;
+
     function handleParentCheckboxChange(parentId, childClass) {
         const parentCheckbox = document.getElementById(parentId);
         const childCheckboxes = document.querySelectorAll(`.${childClass}`);
@@ -15,12 +17,22 @@ document.addEventListener('DOMContentLoaded', function () {
         const parentCheckbox = document.getElementById(parentId);
         let allChecked = true;
 
+        totalChildren = 0;
         childCheckboxes.forEach(child => {
             if (!child.checked) {
                 allChecked = false;
             }
+            if (child.checked) {
+                totalChildren++;
+            }
         });
-        parentCheckbox.checked = allChecked;
+
+        if (totalChildren === 0) {
+            parentCheckbox.checked = false;
+        } else {
+            parentCheckbox.checked = true
+        }
+       
     }
 
     document.querySelectorAll('.parent-checkbox').forEach(parent => {

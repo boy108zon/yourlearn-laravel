@@ -13,6 +13,10 @@
     </div>
 @endif
 
+<div class="container-fluid d-none text-center mx-auto max-w-50" id="js-error-messages">
+    
+</div>
+
 
 @if(session('swal')) 
     @php
@@ -30,6 +34,7 @@
                 hideMethod: 'fadeOut',
                 extendedTimeOut: 1000, 
                 preventDuplicates: true,
+                toastClass: 'fw-bold',
             };
 
             if ('{{ $swalType }}' === 'success') {
