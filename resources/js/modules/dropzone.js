@@ -2,6 +2,7 @@ import Dropzone from 'dropzone';
 import 'dropzone/dist/dropzone.css';
 
 
+let isDropzoneInitialized = false;
 Dropzone.autoDiscover = false;
 
 let productId, csrfToken, productName, storeUrl, removeUrl, primaryStatusUrl;
@@ -48,6 +49,10 @@ const getPreviewTemplate = () => `
 `;
 
 export function initializeDropzone() {
+
+  if (isDropzoneInitialized) return;
+  isDropzoneInitialized = true;
+  
   initializeGlobalVariables(); 
   const dropzoneElement = document.querySelector('.dropzone');
   const existingImages = getExistingImages(dropzoneElement);
@@ -69,14 +74,13 @@ export function initializeDropzone() {
     dictResponseError: "Server error. Please try again later.",
     init() {
 
-      const myDropzone = this;
       this.element.style.border = 'none'; 
 
       existingImages.forEach(image => {
         addExistingImageToContainer(image); 
       });
 
-      myDropzone.on('addedfile', (file) => {
+      this.on('addedfile', (file) => {
         const previewElement = file.previewElement;
         const productNameElement = previewElement.querySelector('[data-dz-name]');
         if (productNameElement) {
@@ -84,7 +88,7 @@ export function initializeDropzone() {
         }
       });
 
-      myDropzone.on('error', (file, message) => {
+      this.on('error', (file, message) => {
         const previewElement = file.previewElement;
         const errorMessageContainer = document.getElementById('dropzone-error-messages');
         
@@ -98,7 +102,7 @@ export function initializeDropzone() {
         }, 2000);
       });
 
-      myDropzone.on('success', (file, response) => {
+      this.on('success', (file, response) => {
 
         const previewElement = file.previewElement;
         const errorMessageContainer = document.getElementById('dropzone-error-messages');

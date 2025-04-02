@@ -9,7 +9,7 @@
                     @if($image->is_primary)
                         <div class="col-6 mb-3">
                             <div class="product-image-wrapper position-relative">
-                                <img src="{{ $productImageService->getImageUrl($image->image_url,'public') }}" 
+                                <img src="{{ $productImageService->getImageUrl($image->image_url) }}" 
                                     alt="{{ $product->name }} - Primary Image"
                                     class="img-fluid rounded shadow-md hover-scale"
                                     data-bs-toggle="modal" 
@@ -30,10 +30,10 @@
                 <p class="fs-5">
                    
                     @if($HighestPromoCodeDiscount['promo_code'] > 0)
-                        <span class="text-muted"><s>MRP ₹{{ number_format($product->price, 2) }}</s></span>
+                        <span class="text-muted"><s> ${{ number_format($product->price, 2) }}</s></span>
                         <span>Now ₹{{ number_format($product->price - $HighestPromoCodeDiscount['discountValue'], 2) }}</span>
                     @else
-                        <span>MRP ₹{{ number_format($product->price, 2) }}</span>
+                        <span> ${{ number_format($product->price, 2) }}</span>
                     @endif
                     <span class="text-success">{{  @($HighestPromoCodeDiscount['discountValue'] > 0) ? ($HighestPromoCodeDiscount['percentage_value']).'% OFF' : NULL }}</span>
                 </p>
@@ -86,7 +86,7 @@
                     <div class="thumbnail-container d-flex flex-column justify-content-center align-items-center me-3">
                         @foreach($product->images as $index => $image)
                             <div class="thumbnail-item mb-2">
-                                <img src="{{ $productImageService->getImageUrl($image->image_url, 'public') }}" 
+                                <img src="{{ $productImageService->getImageUrl($image->image_url) }}" 
                                     class="img-fluid rounded-3 thumbnail-preview" 
                                     alt="Thumbnail {{ $index + 1 }}" 
                                     data-bs-target="#carouselExampleControls" 

@@ -52,7 +52,7 @@ class ProductsDataTable extends DataTable
                     'ratingCount' => $ratingCount
                 ])->render();
             
-                $imageUrl = app(ProductImageService::class)->getImageUrl($firstImage->image_url, $this->filesystemDisk);
+                $imageUrl = app(ProductImageService::class)->getImageUrl($firstImage->image_url);
             
                 $popoverContent = '
                     <div class="d-flex flex-column align-items-center justify-content-center w-100" style="max-height: 90vh; overflow: auto; background-color: #fff; padding: 10px;">

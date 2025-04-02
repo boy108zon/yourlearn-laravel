@@ -5,6 +5,7 @@ import { Filters } from './modules/filters';
 import './modules/checkboxHandler';
 import loadProductsWithFilters from './modules/loadProductsWithFilters';
 import { initializeZoom, setupZoomOnModal } from  './modules/photoZoom.js';
+import {initializeDropzone} from './modules/dropzone.js';
 import '../css/rating.css';
 import '../css/productdetails.css';
 import './modules/rating.js';
@@ -33,7 +34,7 @@ if (localStorage.getItem("light")) {
     document.documentElement.setAttribute('data-bs-theme', 'dark');
 }
 
-const initializeDropzone = () => {
+const verifyDropzone = () => {
     const dropzoneElement = document.querySelector('.dropzone'); 
     if (dropzoneElement) {
       initializeDropzone();
@@ -79,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     } 
      
-    initializeDropzone();
+    verifyDropzone();
     initializeZoomEffects();
     
 });
