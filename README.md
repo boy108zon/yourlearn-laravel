@@ -33,7 +33,7 @@ This application is built using :
     
 </ul>
 
-This is just a <b>Laravel 11</b> application with integrated <b>Bootstrap 5.3.3</b> and <b>Roles, Menus , Users , Permissions , Products , Orders , Promotion Coupons , Products Thumnails Management</b>.<br/>
+This is just a <b>Laravel 11</b> application with integrated <b>Bootstrap 5.3.3</b> and <b>Roles, Menus , Users , Permissions , Products , Orders , Promotion Coupons , Products Thumbnails Management</b>.<br/>
 You can use this as a starting point to create your own Bootstrap 5.3.3 based Laravel applications. It has dynamic Menus as in database mysql and you can manage Menus and Permissions based on Users Roles.
 
 
